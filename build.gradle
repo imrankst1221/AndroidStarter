@@ -9,6 +9,16 @@ buildscript {
         gradleVersion = '4.1.2'
         kotlinVersion = '1.4.30'
         hiltVersion = '2.33-beta'
+        workVersion = '2.4.0'
+
+        gsonVersion = '2.8.2'
+        roomVersion = '2.2.5'
+        materialVersion = '1.2.0'
+        retrofitVersion = '2.9.0'
+        coroutinesVersion = "1.4.2"
+        okhttpLoggingVersion = '4.7.2'
+        constraintLayoutVersion = '2.0.0-beta3'
+
     }
 
     repositories {
