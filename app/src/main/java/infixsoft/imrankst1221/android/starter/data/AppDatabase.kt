@@ -15,7 +15,6 @@ import infixsoft.imrankst1221.android.starter.data.model.UserDao
 import infixsoft.imrankst1221.android.starter.utilities.DATABASE_NAME
 import infixsoft.imrankst1221.android.starter.utilities.KEY_FILENAME
 import infixsoft.imrankst1221.android.starter.utilities.USER_DATA_FILENAME
-import infixsoft.imrankst1221.android.starter.workers.SeedDatabaseWorker
 
 /**
  * @author imran.choudhury
@@ -38,18 +37,12 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-        // Create and pre-populate the database:
-        // https://medium.com/google-developers/7-pro-tips-for-room-fbadea4bfbd1#4785
         private fun buildDatabase(context: Context): AppDatabase {
             return Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
                 .addCallback(
                     object : RoomDatabase.Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
-                            val request = OneTimeWorkRequestBuilder<SeedDatabaseWorker>()
-                                .setInputData(workDataOf(KEY_FILENAME to USER_DATA_FILENAME))
-                                .build()
-                            WorkManager.getInstance(context).enqueue(request)
                         }
                     }
                 )

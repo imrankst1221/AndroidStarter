@@ -101,7 +101,7 @@ class UserDetailsDaoTest {
         assertThat(userDetailsDao.getDetailNotes(3), equalTo(textNote))
 
 
-        // back to previous value 
+        // back to previous value
         userDetailsDao.updateNotes(1, "")
         userDetailsDao.updateNotes(2, "")
         userDetailsDao.updateNotes(3, "")

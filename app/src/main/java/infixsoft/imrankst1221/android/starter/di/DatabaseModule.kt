@@ -13,6 +13,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import infixsoft.imrankst1221.android.starter.data.AppDatabase
 import infixsoft.imrankst1221.android.starter.data.model.UserDao
+import infixsoft.imrankst1221.android.starter.data.model.UserDetailsDao
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -26,7 +27,12 @@ class DatabaseModule {
     }
 
     @Provides
-    fun providePlantDao(appDatabase: AppDatabase): UserDao {
+    fun provideUserDao(appDatabase: AppDatabase): UserDao {
         return appDatabase.userDaoDao()
+    }
+
+    @Provides
+    fun provideUserDetailsDao(appDatabase: AppDatabase): UserDetailsDao {
+        return appDatabase.userDetailsDao()
     }
 }

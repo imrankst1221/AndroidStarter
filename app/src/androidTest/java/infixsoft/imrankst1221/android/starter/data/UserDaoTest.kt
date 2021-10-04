@@ -1,5 +1,6 @@
 package infixsoft.imrankst1221.android.starter.data
 
+import androidx.annotation.Nullable
 import androidx.room.Room
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -14,6 +15,11 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+
 
 /**
  * @author imran.choudhury
@@ -46,16 +52,18 @@ class UserDaoTest {
     }
 
     @Test fun testGetAllUsers() = runBlocking {
-        val userItems = userDao.getUserItems().first()
+        val userItems = userDao.getUsers().value!!
         assertThat(userItems.size, Matchers.equalTo(3))
 
         assertThat(userItems[0], equalTo(user1))
         assertThat(userItems[1], equalTo(user2))
         assertThat(userItems[2], equalTo(user3))
+
+        val liveData = userDao.getUsers()
     }
 
     @Test fun testGetUser() = runBlocking {
-        assertThat(userDao.getUserItem(user3.userId), equalTo(user3))
+        assertThat(userDao.getUser(user3.userId), equalTo(user3))
     }
 
     @Test fun testUpdateAllUser() = runBlocking{
@@ -65,7 +73,7 @@ class UserDaoTest {
 
         // insert new values
         userDao.insertAll(listOf(userA, userC, userB))
-        val userItems = userDao.getUserItems().first()
+        val userItems = userDao.getUsers().value!!
         assertThat(userItems.size, Matchers.equalTo(3))
         assertThat(userItems[0], equalTo(userA))
         assertThat(userItems[1], equalTo(userB))
