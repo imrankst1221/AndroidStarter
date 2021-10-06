@@ -1,6 +1,7 @@
 package infixsoft.imrankst1221.android.starter.data.model
 
 import androidx.room.*
+import java.io.Serializable
 
 /**
  * @author imran.choudhury
@@ -24,4 +25,4 @@ data class UserDetails(
     var company: String,
     val blog: String,
     val note: String,
-)
+) : Serializable

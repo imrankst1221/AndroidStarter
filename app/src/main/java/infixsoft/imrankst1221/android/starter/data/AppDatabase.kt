@@ -12,9 +12,7 @@ import infixsoft.imrankst1221.android.starter.data.model.UserDetails
 import infixsoft.imrankst1221.android.starter.data.model.UserDetailsDao
 import infixsoft.imrankst1221.android.starter.data.model.User
 import infixsoft.imrankst1221.android.starter.data.model.UserDao
-import infixsoft.imrankst1221.android.starter.utilities.DATABASE_NAME
-import infixsoft.imrankst1221.android.starter.utilities.KEY_FILENAME
-import infixsoft.imrankst1221.android.starter.utilities.USER_DATA_FILENAME
+import infixsoft.imrankst1221.android.starter.utilities.Constants
 
 /**
  * @author imran.choudhury
@@ -38,7 +36,7 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         private fun buildDatabase(context: Context): AppDatabase {
-            return Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
+            return Room.databaseBuilder(context, AppDatabase::class.java, Constants.DATABASE_NAME)
                 .addCallback(
                     object : RoomDatabase.Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {

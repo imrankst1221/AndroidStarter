@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UsersViewModel @Inject internal constructor(
-    private val userRepository: UserRepository) : ViewModel() {
-
+        private val userRepository: UserRepository
+    ) : ViewModel() {
     suspend fun getUserList() =  userRepository.getUsers()
 }

@@ -7,12 +7,13 @@ buildscript {
 
         glideVersion = '4.10.0'
         gradleVersion = '4.1.2'
-        kotlinVersion = '1.4.30'
+        kotlinVersion = '1.5.30'
         hiltVersion = '2.33-beta'
         workVersion = '2.4.0'
         gsonVersion = '2.8.2'
         roomVersion = '2.3.0'
 
+        navigationVersion = '2.4.0-alpha01'
         materialVersion = '1.2.0'
         retrofitVersion = '2.9.0'
         coroutinesVersion = "1.4.2"
@@ -34,8 +35,9 @@ buildscript {
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$gradleVersion"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.30"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hiltVersion"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion"
     }
 }
 

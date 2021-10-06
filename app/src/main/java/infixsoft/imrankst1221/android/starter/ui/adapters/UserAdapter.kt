@@ -69,5 +69,7 @@ class UserAdapter: RecyclerView.Adapter<UserAdapter.AdapterViewHolder>() {
         return differ.currentList.size
     }
 
-
+    fun setOnItemClickListener(listener: (User) -> Unit) {
+        onItemClickListener = listener
+    }
 }

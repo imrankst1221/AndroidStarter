@@ -6,8 +6,11 @@ package infixsoft.imrankst1221.android.starter.utilities
  * Constants used throughout the app.
  */
 
-const val DATABASE_NAME = "github-db"
-const val USER_DATA_FILENAME = "user.json"
+class Constants{
+    companion object {
+        const val DATABASE_NAME = "github-db"
+        const val QUERY_PER_PAGE = 30
+    }
+}
 
-const val KEY_FILENAME = "USER_DATA_FILENAME"
 

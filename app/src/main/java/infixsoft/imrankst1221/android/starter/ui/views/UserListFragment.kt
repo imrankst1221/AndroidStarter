@@ -7,13 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import infixsoft.imrankst1221.android.starter.R
 import infixsoft.imrankst1221.android.starter.base.BaseFragment
 import infixsoft.imrankst1221.android.starter.databinding.FragmentUserListBinding
 import infixsoft.imrankst1221.android.starter.ui.adapters.UserAdapter
 import infixsoft.imrankst1221.android.starter.ui.viewmodels.UsersViewModel
+import infixsoft.imrankst1221.android.starter.utilities.Constants
 import infixsoft.imrankst1221.android.starter.utilities.Coroutines
+import infixsoft.imrankst1221.android.starter.utilities.EndlessRecyclerOnScrollListener
 
 class UserListFragment : BaseFragment<FragmentUserListBinding>(){
 
@@ -22,13 +25,28 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
 
     lateinit var userViewModel: UsersViewModel
     lateinit var userAdapter: UserAdapter
+    private lateinit var onScrollListener: EndlessRecyclerOnScrollListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userViewModel = (activity as MainActivity).userViewModel
+        setupUI(view)
         setupRecyclerView()
-        //setupUI(view)
         setupObserver()
+    }
+
+    private fun setupUI(view: View) {
+        binding.itemErrorMessage.btnRetry.setOnClickListener {
+            //TODO
+            //userViewModel.getUserList()
+        }
+
+        onScrollListener = object : EndlessRecyclerOnScrollListener(Constants.QUERY_PER_PAGE) {
+            override fun onLoadMore() {
+                //TODO
+                //userViewModel.getUserList()
+            }
+        }
     }
 
     private fun setupRecyclerView() {
@@ -36,6 +54,16 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
         binding.rvUsers.apply {
             adapter = userAdapter
             layoutManager = LinearLayoutManager(activity)
+            addOnScrollListener(onScrollListener)
+        }
+        userAdapter.setOnItemClickListener {
+            val bundle = Bundle().apply {
+                putSerializable("user", it)
+            }
+            findNavController().navigate(
+                R.id.action_userListFragment_to_userDetailsFragment,
+                bundle
+            )
         }
     }
 

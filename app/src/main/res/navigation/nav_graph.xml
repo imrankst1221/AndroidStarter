@@ -15,5 +15,9 @@
     <fragment
         android:id="@+id/userDetailsFragment"
         android:name="infixsoft.imrankst1221.android.starter.ui.views.UserDetailsFragment"
-        android:label="UserDetailsFragment" />
+        android:label="UserDetailsFragment">
+        <argument
+            android:name="user"
+            app:argType="infixsoft.imrankst1221.android.starter.data.model.User" />
+    </fragment>
 </navigation>
