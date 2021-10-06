@@ -17,9 +17,9 @@ import retrofit2.http.Query
  */
 
 interface UserApiService {
-    @GET("users?since={since}")
+    @GET("users")
     suspend fun getUsers(
-        @Path("since") since: Int
+        @Query("since") since: Int
     ): Response<List<User>>
 
     companion object {
