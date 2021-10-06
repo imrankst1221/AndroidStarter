@@ -2,7 +2,18 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph">
-
-
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/userListFragment">
+    <fragment
+        android:id="@+id/userListFragment"
+        android:name="infixsoft.imrankst1221.android.starter.ui.views.UserListFragment"
+        android:label="UserListFragment" >
+        <action
+            android:id="@+id/action_userListFragment_to_userDetailsFragment"
+            app:destination="@id/userDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userDetailsFragment"
+        android:name="infixsoft.imrankst1221.android.starter.ui.views.UserDetailsFragment"
+        android:label="UserDetailsFragment" />
 </navigation>
