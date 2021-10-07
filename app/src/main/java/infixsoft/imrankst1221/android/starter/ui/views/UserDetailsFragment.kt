@@ -1,14 +1,10 @@
 package infixsoft.imrankst1221.android.starter.ui.views
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.webkit.WebViewClient
+import android.view.*
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.snackbar.Snackbar
 import infixsoft.imrankst1221.android.starter.R
 import infixsoft.imrankst1221.android.starter.base.BaseFragment
 import infixsoft.imrankst1221.android.starter.databinding.FragmentUserDetailsBinding
@@ -21,6 +17,7 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>() {
     private val TAG = "---UserDetailsFragment"
     val args: UserDetailsFragmentArgs by navArgs()
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUI(view)
@@ -28,6 +25,8 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>() {
 
     private fun setupUI(view: View) {
         val user = args.user
-        BLogger.d(TAG, user.login)
+        val supportActionBar = (activity as AppCompatActivity?)!!.supportActionBar
+        supportActionBar?.title = user.login
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 }

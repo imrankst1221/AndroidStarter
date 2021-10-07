@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -38,6 +39,10 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
     }
 
     private fun setupUI(view: View) {
+        val supportActionBar = (activity as AppCompatActivity?)!!.supportActionBar
+        supportActionBar?.title = getString(R.string.app_name)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+
         binding.itemErrorMessage.btnRetry.setOnClickListener {
             //TODO
             //userViewModel.getUserList()
@@ -78,7 +83,7 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.toolbar_menu, menu)
+        inflater.inflate(R.menu.toolbar_search_menu, menu)
         val searchItem = menu.findItem(R.id.action_search)
         searchView = searchItem.actionView as SearchView
         searchView.setOnSearchClickListener {

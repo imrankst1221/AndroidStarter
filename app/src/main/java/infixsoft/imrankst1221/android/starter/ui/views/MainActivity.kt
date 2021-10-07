@@ -3,6 +3,7 @@ package infixsoft.imrankst1221.android.starter.ui.views
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -26,7 +27,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     override fun onViewReady(savedInstanceState: Bundle?) {
         super.onViewReady(savedInstanceState)
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.title = getString(R.string.app_name)
         if (savedInstanceState == null) {
             setupBottomNavigationBar()
         }
@@ -34,5 +34,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     private fun setupBottomNavigationBar() {
        //TODO
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
