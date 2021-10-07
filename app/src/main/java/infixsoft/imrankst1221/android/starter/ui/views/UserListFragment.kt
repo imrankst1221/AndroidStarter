@@ -1,11 +1,12 @@
 package infixsoft.imrankst1221.android.starter.ui.views
 
+import android.app.SearchManager
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.EditText
+import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +26,7 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
 
     lateinit var userViewModel: UsersViewModel
     lateinit var userAdapter: UserAdapter
+    private lateinit var searchView: SearchView
     private lateinit var onScrollListener: EndlessRecyclerOnScrollListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,7 +72,66 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
 
     private fun setupObserver() = Coroutines.main {
         userViewModel.getUserList().observe(viewLifecycleOwner, Observer {
-            userAdapter.differ.submitList(it)
+            userAdapter.submitList(it)
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.toolbar_menu, menu)
+        val searchItem = menu.findItem(R.id.action_search)
+        searchView = searchItem.actionView as SearchView
+        searchView.setOnSearchClickListener {
+            searchView.maxWidth = android.R.attr.width
+        }
+
+        searchView.setOnCloseListener {
+            searchView.onActionViewCollapsed()
+            searchView.maxWidth = 0
+            true
+        }
+
+        val searchPlate =
+            searchView.findViewById(androidx.appcompat.R.id.search_src_text) as EditText
+        searchPlate.hint = getString(R.string.search)
+        val searchPlateView: View =
+            searchView.findViewById(androidx.appcompat.R.id.search_plate)
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let {
+                    if (query.isEmpty()){
+                        userAdapter.filter.filter("")
+                    }else {
+                        userAdapter.filter.filter(query)
+                    }
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(query: String?): Boolean {
+                query?.let {
+                    if (query.isEmpty()){
+                        userAdapter.filter.filter("")
+                    }else {
+                        userAdapter.filter.filter(query)
+                    }
+                }
+                return false
+            }
+        })
+
+        activity?.let {
+            searchPlateView.setBackgroundColor(
+                ContextCompat.getColor(
+                    it,
+                    android.R.color.transparent
+                )
+            )
+            val searchManager =
+                it.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(it.componentName))
+        }
+        return super.onCreateOptionsMenu(menu, inflater)
     }
 }
