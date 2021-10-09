@@ -6,4 +6,11 @@
 
     <string name="search">Search</string>
     <string name="something_went_wrong">Something went wrong</string>
+    <string name="followers">Followers:</string>
+    <string name="following">Following</string>
+    <string name="name">Name:</string>
+    <string name="company">Company:</string>
+    <string name="blog">Blog:</string>
+    <string name="notes">Notes:</string>
+    <string name="save">Save</string>
 </resources>

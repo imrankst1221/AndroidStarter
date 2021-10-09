@@ -29,6 +29,10 @@ data class UserDetails(
     @SerializedName("name")
     val name: String,
 
+    @ColumnInfo(defaultValue = "")
+    @SerializedName("avatar_url")
+    val avatarUrl: String?,
+
     @SerializedName("followers")
     val followers: Int,
 
@@ -37,9 +41,9 @@ data class UserDetails(
 
     @ColumnInfo(defaultValue = "")
     @SerializedName("company")
-    var company: String,
+    var company: String?,
 
     @ColumnInfo(defaultValue = "")
     @SerializedName("blog")
-    val blog: String
+    val blog: String?
 ) : Serializable

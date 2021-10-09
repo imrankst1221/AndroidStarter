@@ -28,7 +28,4 @@ data class User(
 
     @ColumnInfo(defaultValue = "")
     val userNote: String?,
-    
-    //@Embedded(prefix = "_note")
-    //val note: UserNote?
 ) : Serializable
