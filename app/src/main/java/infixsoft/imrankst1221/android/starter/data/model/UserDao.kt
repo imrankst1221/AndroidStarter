@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
-    @Query("SELECT * FROM users ORDER BY login")
+    @Query("SELECT users.*, userNote.note AS userNote FROM users LEFT JOIN userNote ON users.id = userNote.id")
     fun getUsers(): LiveData<List<User>>
 
     @Query("SELECT * FROM users WHERE id = :userId")

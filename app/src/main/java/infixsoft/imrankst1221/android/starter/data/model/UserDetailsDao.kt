@@ -5,6 +5,7 @@ package infixsoft.imrankst1221.android.starter.data.model
  * 18/9/21
  */
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
@@ -16,11 +17,8 @@ interface UserDetailsDao {
     @Query("SELECT * FROM user_details WHERE id = :id")
     fun getUserDetails(id: Long): UserDetails
 
-    @Query("SELECT note FROM user_details WHERE id = :id LIMIT 1")
-    fun getDetailNotes(id: Long): String
-
-    @Query("UPDATE user_details SET note=:note WHERE id = :id")
-    suspend fun updateNotes(id: Long, note: String)
+    @Query("SELECT * FROM user_details WHERE login = :login")
+    fun getUserDetailsByLogin(login: String): LiveData<UserDetails>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUserDetails(userDetails: UserDetails)

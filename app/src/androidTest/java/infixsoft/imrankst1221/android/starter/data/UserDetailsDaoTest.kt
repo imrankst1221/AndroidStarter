@@ -92,7 +92,7 @@ class UserDetailsDaoTest {
     }
 
     @Test fun testUpdateNote() = runBlocking{
-        val textNote = "This a test note"
+        val textNote = "This a test userNote"
         userDetailsDao.updateNotes(1, textNote)
         userDetailsDao.updateNotes(2, textNote)
         userDetailsDao.updateNotes(3, textNote)

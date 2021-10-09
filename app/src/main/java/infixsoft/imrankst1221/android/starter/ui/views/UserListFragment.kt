@@ -76,7 +76,7 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
 
 
     private fun setupObserver() = Coroutines.main {
-        userViewModel.getUserList().observe(viewLifecycleOwner, Observer {
+        userViewModel.getUserList().observe(viewLifecycleOwner, {
             userAdapter.submitList(it)
         })
     }

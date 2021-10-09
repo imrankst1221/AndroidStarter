@@ -5,13 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.workDataOf
-import infixsoft.imrankst1221.android.starter.data.model.UserDetails
-import infixsoft.imrankst1221.android.starter.data.model.UserDetailsDao
-import infixsoft.imrankst1221.android.starter.data.model.User
-import infixsoft.imrankst1221.android.starter.data.model.UserDao
+import infixsoft.imrankst1221.android.starter.data.model.*
 import infixsoft.imrankst1221.android.starter.utilities.Constants
 
 /**
@@ -21,10 +15,11 @@ import infixsoft.imrankst1221.android.starter.utilities.Constants
  */
 
 
-@Database(entities = [User::class, UserDetails::class], version = 1, exportSchema = false)
+@Database(entities = [User::class, UserDetails::class, UserNote::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDaoDao(): UserDao
     abstract fun userDetailsDao(): UserDetailsDao
+    abstract fun userNoteDao(): UserNoteDao
 
     companion object {
         @Volatile private var instance: AppDatabase? = null

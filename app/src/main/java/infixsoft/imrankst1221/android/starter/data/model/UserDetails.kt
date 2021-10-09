@@ -1,6 +1,7 @@
 package infixsoft.imrankst1221.android.starter.data.model
 
 import androidx.room.*
+import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 /**
@@ -18,11 +19,27 @@ import java.io.Serializable
 data class UserDetails(
     @PrimaryKey
     @ColumnInfo(name = "id")
+    @SerializedName("id")
     val userId: Long,
+
+    @SerializedName("login")
+    val login: String,
+
+    @ColumnInfo(defaultValue = "")
+    @SerializedName("name")
     val name: String,
+
+    @SerializedName("followers")
     val followers: Int,
+
+    @SerializedName("following")
     val following: Int,
+
+    @ColumnInfo(defaultValue = "")
+    @SerializedName("company")
     var company: String,
-    val blog: String,
-    val note: String,
+
+    @ColumnInfo(defaultValue = "")
+    @SerializedName("blog")
+    val blog: String
 ) : Serializable

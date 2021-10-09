@@ -2,6 +2,7 @@ package infixsoft.imrankst1221.android.starter.data.api
 
 import infixsoft.imrankst1221.android.starter.BuildConfig
 import infixsoft.imrankst1221.android.starter.data.model.User
+import infixsoft.imrankst1221.android.starter.data.model.UserDetails
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
@@ -21,6 +22,12 @@ interface UserApiService {
     suspend fun getUsers(
         @Query("since") since: Int
     ): Response<List<User>>
+
+    @GET("users/{user}")
+    suspend fun getUserDetails(
+        @Path("user") userName: String
+    ): Response<UserDetails>
+
 
     companion object {
         fun create(): UserApiService {

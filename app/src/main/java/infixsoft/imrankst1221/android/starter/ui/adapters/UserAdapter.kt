@@ -1,6 +1,7 @@
 package infixsoft.imrankst1221.android.starter.ui.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
@@ -59,9 +60,14 @@ class UserAdapter: RecyclerView.Adapter<UserAdapter.AdapterViewHolder>(), Filter
                 .placeholder(R.drawable.placeholder_image)
                 .into(binding.ivUserProfile)
 
+            if(user.userNote.isNullOrEmpty()){
+                binding.ivNote.visibility = View.GONE
+            }else{
+                binding.ivNote.visibility = View.VISIBLE
+            }
             binding.tvUserId.text = user.login
             //TODO set user details
-            binding.tvUserDetails.text = user.login
+            //binding.tvUserDetails.text = user.login
         }
 
         holder.itemView.apply {
