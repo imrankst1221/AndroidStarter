@@ -21,7 +21,7 @@ interface UserApiService {
     @GET("users")
     suspend fun getUsers(
         @Query("since") since: Int
-    ): Response<List<User>>
+    ): Response<ArrayList<User>>
 
     @GET("users/{user}")
     suspend fun getUserDetails(

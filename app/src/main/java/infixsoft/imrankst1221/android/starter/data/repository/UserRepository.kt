@@ -25,7 +25,7 @@ class UserRepository @Inject constructor(
     private val userNoteDao: UserNoteDao,
     private val service: UserApiService): SafeApiRequest(){
 
-    private val users = MutableLiveData<List<User>>()
+    private val users = MutableLiveData<ArrayList<User>>()
     private val userDetails = MutableLiveData<UserDetails>()
 
     init {
@@ -51,16 +51,31 @@ class UserRepository @Inject constructor(
 
     suspend fun getUsers(): LiveData<List<User>> {
         return withContext(Dispatchers.IO) {
-            fetchUsers()
             userDao.getUsers()
         }
     }
 
     private suspend fun fetchUsers() {
+        val size = userDao.getUsers().value?.size ?: 0
+        if (networkHelper.isNetworkConnected() && size <= 0) {
+            val response = apiRequest { service.getUsers(size) }
+            users.postValue(response)
+        }else if (size > 0){
+            users.postValue(userDao.getUsers().value!!.toCollection(ArrayList()))
+        }
+    }
+
+    suspend fun loadMoreUsers() {
         if (networkHelper.isNetworkConnected()) {
             val size = users.value?.size ?: 0
             val response = apiRequest { service.getUsers(size) }
-            users.postValue(response)
+            if (size > 0){
+                val newList= users.value
+                newList?.addAll(response)
+                users.postValue(newList)
+            }else{
+                users.postValue(response)
+            }
         }
     }
 
@@ -84,6 +99,12 @@ class UserRepository @Inject constructor(
 
     private suspend fun getUserNote(userId: Long): UserNote?{
         return userNoteDao.getNote(userId)
+    }
+
+    operator fun <T> MutableLiveData<ArrayList<T>>.plusAssign(values: List<T>) {
+        val value = this.value ?: arrayListOf()
+        value.addAll(values)
+        this.value = value
     }
 
     //fun getUsers() = userDao.getUsers()
