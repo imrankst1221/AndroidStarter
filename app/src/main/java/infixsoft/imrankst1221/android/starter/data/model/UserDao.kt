@@ -12,10 +12,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface UserDao {
     @Query("SELECT users.*, userNote.note AS userNote FROM users LEFT JOIN userNote ON users.id = userNote.id")
-    fun getUsers(): LiveData<List<User>>
+    fun getUsersWithNote(): LiveData<List<User>>
+
+    @Query("SELECT * FROM users")
+    fun getAllUsers(): List<User>
 
     @Query("SELECT * FROM users WHERE id = :userId")
-    fun getUser(userId: Long): LiveData<User>
+    fun getUser(userId: Long): User
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(users: List<User>)

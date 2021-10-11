@@ -1,13 +1,13 @@
 package infixsoft.imrankst1221.android.starter.data
 
-import androidx.annotation.Nullable
 import androidx.room.Room
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import infixsoft.imrankst1221.android.starter.MainCoroutineRule
 import infixsoft.imrankst1221.android.starter.data.model.User
 import infixsoft.imrankst1221.android.starter.data.model.UserDao
-import kotlinx.coroutines.flow.first
+import infixsoft.imrankst1221.android.starter.utilities.getLiveDataValue
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Matchers
@@ -15,10 +15,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
+import kotlin.jvm.Throws
 
 
 /**
@@ -28,12 +25,13 @@ import java.util.concurrent.TimeUnit
 
 @RunWith(AndroidJUnit4::class)
 class UserDaoTest {
+    private val coroutineRule = MainCoroutineRule()
+
     private lateinit var database: AppDatabase
     private lateinit var userDao: UserDao
-    private val user1 = User(1, "mojombo", "https://avatars.githubusercontent.com/u/1?v=4")
-    private val user2 = User(2, "defunkt", "https://avatars.githubusercontent.com/u/2?v=4")
-    private val user3 = User(3, "defunkt", "https://avatars.githubusercontent.com/u/4?v=4")
-
+    val user1 = User(1, "mojombo", "https://avatars.githubusercontent.com/u/1?v=4", "")
+    val user2 = User(2, "defunkt", "https://avatars.githubusercontent.com/u/2?v=4", "")
+    val user3 = User(3, "defunkt", "https://avatars.githubusercontent.com/u/4?v=4", "")
 
     @Before fun createDb() = runBlocking{
         val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -51,29 +49,36 @@ class UserDaoTest {
         userDao.insertAll(listOf(user1, user2, user3))
     }
 
-    @Test fun testGetAllUsers() = runBlocking {
-        val userItems = userDao.getUsers().value!!
+    @Throws(InterruptedException::class)
+    fun testGetAllUsers() = runBlocking{
+        val userItems = userDao.getAllUsers()
         assertThat(userItems.size, Matchers.equalTo(3))
 
+        assertThat(userItems.size, Matchers.equalTo(3))
         assertThat(userItems[0], equalTo(user1))
         assertThat(userItems[1], equalTo(user2))
         assertThat(userItems[2], equalTo(user3))
-
-        val liveData = userDao.getUsers()
     }
 
-    @Test fun testGetUser() = runBlocking {
-        assertThat(userDao.getUser(user3.userId), equalTo(user3))
+
+    @Throws(InterruptedException::class)
+    fun testUsers() = runBlocking{
+        val userItems = getLiveDataValue(userDao.getUsersWithNote())
+
+        assertThat(userItems.size, Matchers.equalTo(3))
+        assertThat(userItems[0], equalTo(user1))
+        assertThat(userItems[1], equalTo(user2))
+        assertThat(userItems[2], equalTo(user3))
     }
 
     @Test fun testUpdateAllUser() = runBlocking{
-        val userA = User(1, "Test 1", "")
-        val userB = User(2, "Test 2", "")
-        val userC = User(3, "Test 3", "")
+        val userA = User(1, "Test 1", "", "")
+        val userB = User(2, "Test 2", "", "")
+        val userC = User(3, "Test 3", "", "")
 
         // insert new values
         userDao.insertAll(listOf(userA, userC, userB))
-        val userItems = userDao.getUsers().value!!
+        val userItems = userDao.getAllUsers()
         assertThat(userItems.size, Matchers.equalTo(3))
         assertThat(userItems[0], equalTo(userA))
         assertThat(userItems[1], equalTo(userB))

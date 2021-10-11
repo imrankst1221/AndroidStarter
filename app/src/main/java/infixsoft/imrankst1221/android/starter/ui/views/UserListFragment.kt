@@ -44,12 +44,16 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
         binding.itemErrorMessage.btnRetry.setOnClickListener {
-            userViewModel.loadMoreUsers()
+            Coroutines.main {
+                userViewModel.loadMoreUsers()
+            }
         }
 
         onScrollListener = object : EndlessRecyclerOnScrollListener(Constants.QUERY_PER_PAGE) {
             override fun onLoadMore() {
-                userViewModel.loadMoreUsers()
+                Coroutines.main {
+                    userViewModel.loadMoreUsers()
+                }
             }
         }
     }
@@ -76,7 +80,9 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
     private fun setupObserver() = Coroutines.main {
         userViewModel.getUserList().observe(viewLifecycleOwner, {
             if (it.isEmpty()){
-                userViewModel.loadMoreUsers()
+                Coroutines.main {
+                    userViewModel.loadMoreUsers()
+                }
             }
             userAdapter.submitList(it)
         })

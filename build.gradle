@@ -25,6 +25,7 @@ buildscript {
 
         // test
         testExtJunit = '1.1.0'
+        testCoreJunit = '2.1.0'
         espressoVersion = '3.1.1'
         hiltVersion = '2.33-beta'
     }

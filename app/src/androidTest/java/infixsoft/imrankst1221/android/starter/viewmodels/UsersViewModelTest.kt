@@ -3,6 +3,7 @@ package infixsoft.imrankst1221.android.starter.data
 import android.content.Context
 import androidx.lifecycle.Observer
 import androidx.room.Room
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -10,7 +11,7 @@ import infixsoft.imrankst1221.android.starter.MainCoroutineRule
 import infixsoft.imrankst1221.android.starter.data.repository.UserRepository
 import infixsoft.imrankst1221.android.starter.runBlockingTest
 import infixsoft.imrankst1221.android.starter.ui.viewmodels.UsersViewModel
-import infixsoft.imrankst1221.android.starter.utilities.getValue
+import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -50,7 +51,8 @@ class UsersViewModelTest {
     @Test
     @Throws(InterruptedException::class)
     fun testDefaultValues() = coroutineRule.runBlockingTest {
-
+        usersViewModel.loadMoreUsers()
+        val userList = usersViewModel.getUserList()
+        ViewMatchers.assertThat(userList.value?.size, Matchers.equalTo(30))
     }
-
 }

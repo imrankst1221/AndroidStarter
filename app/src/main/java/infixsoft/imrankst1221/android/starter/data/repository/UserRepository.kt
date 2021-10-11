@@ -1,6 +1,5 @@
 package infixsoft.imrankst1221.android.starter.data.repository
 
-import android.util.TimeUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import infixsoft.imrankst1221.android.starter.data.api.SafeApiRequest
@@ -51,17 +50,17 @@ class UserRepository @Inject constructor(
 
     suspend fun getUsers(): LiveData<List<User>> {
         return withContext(Dispatchers.IO) {
-            userDao.getUsers()
+            userDao.getUsersWithNote()
         }
     }
 
     private suspend fun fetchUsers() {
-        val size = userDao.getUsers().value?.size ?: 0
+        val size = userDao.getUsersWithNote().value?.size ?: 0
         if (networkHelper.isNetworkConnected() && size <= 0) {
             val response = apiRequest { service.getUsers(size) }
             users.postValue(response)
         }else if (size > 0){
-            users.postValue(userDao.getUsers().value!!.toCollection(ArrayList()))
+            users.postValue(userDao.getUsersWithNote().value!!.toCollection(ArrayList()))
         }
     }
 

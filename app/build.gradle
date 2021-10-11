@@ -87,7 +87,9 @@ dependencies {
 
     // Testing dependencies
     testImplementation 'junit:junit:4.13.2'
+    testImplementation "androidx.arch.core:core-testing:$rootProject.testCoreJunit"
     androidTestImplementation "androidx.test.ext:junit:$rootProject.testExtJunit"
+    androidTestImplementation "androidx.arch.core:core-testing:$rootProject.testCoreJunit"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$rootProject.espressoVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.espressoVersion"
     androidTestImplementation "androidx.test.espresso:espresso-intents:$rootProject.espressoVersion"
