@@ -5,7 +5,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.navArgs
@@ -16,7 +15,6 @@ import infixsoft.imrankst1221.android.starter.data.model.User
 import infixsoft.imrankst1221.android.starter.data.model.UserNote
 import infixsoft.imrankst1221.android.starter.databinding.FragmentUserDetailsBinding
 import infixsoft.imrankst1221.android.starter.ui.viewmodels.UsersViewModel
-import infixsoft.imrankst1221.android.starter.utilities.BLogger
 import infixsoft.imrankst1221.android.starter.utilities.Coroutines
 
 class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>() {
@@ -29,6 +27,7 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>() {
     lateinit var mContext: Context
     lateinit var userViewModel: UsersViewModel
     lateinit var user: User
+    private var waitingForNetwork = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,18 +43,29 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>() {
         val supportActionBar = (activity as AppCompatActivity?)!!.supportActionBar
         supportActionBar?.title = user.login
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        binding.itemNoInternet.btnRetry.setOnClickListener {
+            fetchUserDetails(user.login)
+        }
+
+        binding.itemErrorMessage.btnRetry.setOnClickListener {
+            fetchUserDetails(user.login)
+        }
     }
 
     private fun storeNote(note: UserNote) = Coroutines.main {
         userViewModel.storeUserNote(note)
     }
 
+    private fun fetchUserDetails(userName: String){
+        Coroutines.main {
+            userViewModel.fetchUserDetails(userName)
+        }
+    }
     private fun setupObserver() = Coroutines.main {
         userViewModel.getUserDetails(user.login).observe(viewLifecycleOwner, { userDetails ->
             if(userDetails == null) {
-                Coroutines.main {
-                    userViewModel.fetchUserDetails(user.login)
-                }
+                fetchUserDetails(user.login)
             }else {
                 Glide.with(mContext)
                     .load(userDetails.avatarUrl)
@@ -68,16 +78,34 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>() {
                 binding.tvCompany.text = userDetails.company
                 binding.tvBlog.text = userDetails.blog
                 binding.tvNote.setText(user.userNote ?: "")
+
+                binding.itemNoInternet.root.visibility = View.GONE
+                binding.itemErrorMessage.root.visibility = View.GONE
             }
+        })
+
+        userViewModel.onNoInternetFailed().observe(viewLifecycleOwner, {
+            if (it){
+                binding.itemNoInternet.root.visibility = View.VISIBLE
+            }
+        })
+
+        userViewModel.onUserLoadFailed().observe(viewLifecycleOwner, {
+            waitingForNetwork = it
         })
 
         val connectivityManager = mContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         connectivityManager.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
-                if (userViewModel.isUserDetailsLoadFailed()){
-                    Coroutines.main {
-                        userViewModel.fetchUserDetails(user.login)
-                    }
+                if (waitingForNetwork){
+                    fetchUserDetails(user.login)
+                }
+            }
+
+            override fun onLost(network: Network) {
+                super.onLost(network)
+                activity?.runOnUiThread {
+                    //binding.itemNoInternet.root.visibility = View.VISIBLE
                 }
             }
         })

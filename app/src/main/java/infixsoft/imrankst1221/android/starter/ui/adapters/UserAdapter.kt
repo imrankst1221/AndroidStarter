@@ -89,7 +89,8 @@ class UserAdapter: RecyclerView.Adapter<UserAdapter.AdapterViewHolder>(), Filter
                 } else {
                     val filterPattern: String = constraint.toString().toLowerCase().trim()
                     for (store in mFullList) {
-                        if (store.login.contains(filterPattern)) {
+                        if (store.login.contains(filterPattern) ||
+                            (store.userNote != null && store.userNote.contains(filterPattern))) {
                             filteredList.add(store)
                         }
                     }

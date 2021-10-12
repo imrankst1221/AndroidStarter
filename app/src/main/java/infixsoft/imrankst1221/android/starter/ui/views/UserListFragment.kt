@@ -10,7 +10,6 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import infixsoft.imrankst1221.android.starter.R
@@ -32,6 +31,7 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
     lateinit var userAdapter: UserAdapter
     private lateinit var searchView: SearchView
     private lateinit var onScrollListener: EndlessRecyclerOnScrollListener
+    private var waitingForNetwork = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,17 +47,17 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
         supportActionBar?.title = getString(R.string.app_name)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
+        binding.itemNoInternet.btnRetry.setOnClickListener {
+            loadMoreUsers()
+        }
+
         binding.itemErrorMessage.btnRetry.setOnClickListener {
-            Coroutines.main {
-                userViewModel.loadMoreUsers()
-            }
+            loadMoreUsers()
         }
 
         onScrollListener = object : EndlessRecyclerOnScrollListener(Constants.QUERY_PER_PAGE) {
             override fun onLoadMore() {
-                Coroutines.main {
-                    userViewModel.loadMoreUsers()
-                }
+                loadMoreUsers()
             }
         }
     }
@@ -80,30 +80,48 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
         }
     }
 
+    private fun loadMoreUsers(){
+        Coroutines.main {
+            userViewModel.loadMoreUsers()
+        }
+    }
 
     private fun setupObserver() = Coroutines.main {
         userViewModel.getUserList().observe(viewLifecycleOwner, {
             if (it.isEmpty()){
-                Coroutines.main {
-                    userViewModel.loadMoreUsers()
-                }
-                binding.itemErrorMessage.root.visibility = View.VISIBLE
+                loadMoreUsers()
             }else{
                 userAdapter.submitList(it)
+                binding.itemNoInternet.root.visibility = View.GONE
                 binding.itemErrorMessage.root.visibility = View.GONE
             }
+        })
+
+        userViewModel.onNoInternetFailed().observe(viewLifecycleOwner, {
+            if (it){
+                binding.itemNoInternet.root.visibility = View.VISIBLE
+            }
+        })
+
+        userViewModel.onUserLoadFailed().observe(viewLifecycleOwner, {
+            waitingForNetwork = it
         })
 
         val connectivityManager = mContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         connectivityManager.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
-                if (userViewModel.isUserLoadFailed()){
-                    Coroutines.main {
-                        userViewModel.loadMoreUsers()
-                    }
+                if (waitingForNetwork){
+                    loadMoreUsers()
+                }
+            }
+            override fun onLost(network: Network) {
+                super.onLost(network)
+                activity?.runOnUiThread {
+                    binding.itemNoInternet.root.visibility = View.VISIBLE
                 }
             }
         })
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

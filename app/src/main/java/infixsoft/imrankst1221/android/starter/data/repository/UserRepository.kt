@@ -24,12 +24,16 @@ class UserRepository @Inject constructor(
     private val userNoteDao: UserNoteDao,
     private val service: UserApiService): SafeApiRequest(){
 
-    var isUserLoadFailed = false
-    var isUserDetailsLoadFailed = false
+    private val isInternetFailed = MutableLiveData<Boolean>()
+    private val isUserLoadFailed = MutableLiveData<Boolean>()
+    private val isUserDetailsLoadFailed = MutableLiveData<Boolean>()
     private val users = MutableLiveData<ArrayList<User>>()
     private val userDetails = MutableLiveData<UserDetails>()
 
     init {
+        isInternetFailed.value = false
+        isUserLoadFailed.value = false
+        isUserDetailsLoadFailed.value = false
         users.observeForever{
             saveUsers(it)
         }
@@ -56,21 +60,11 @@ class UserRepository @Inject constructor(
         }
     }
 
-    private suspend fun fetchUsers() {
-        val size = userDao.getUsersWithNote().value?.size ?: 0
-        if (networkHelper.isNetworkConnected() && size <= 0) {
-            val response = apiRequest { service.getUsers(size) }
-            users.postValue(response)
-        }else if (size > 0){
-            users.postValue(userDao.getUsersWithNote().value!!.toCollection(ArrayList()))
-        }
-    }
-
     suspend fun loadMoreUsers() {
         if (networkHelper.isNetworkConnected()) {
             val size = users.value?.size ?: 0
             val response = apiRequest { service.getUsers(size) }
-            isUserLoadFailed = false
+            isUserLoadFailed.value = false
             if (size > 0){
                 val newList= users.value
                 newList?.addAll(response)
@@ -79,7 +73,8 @@ class UserRepository @Inject constructor(
                 users.postValue(response)
             }
         }else{
-            isUserLoadFailed = true
+            isInternetFailed.value = true
+            isUserLoadFailed.value = true
         }
     }
 
@@ -93,9 +88,10 @@ class UserRepository @Inject constructor(
         if (networkHelper.isNetworkConnected()) {
             val response = apiRequest { service.getUserDetails(userName) }
             userDetails.postValue(response)
-            isUserDetailsLoadFailed = false
+            isUserDetailsLoadFailed.value = false
         }else{
-            isUserDetailsLoadFailed = true
+            isInternetFailed.value = true
+            isUserDetailsLoadFailed.value = true
         }
     }
 
@@ -105,6 +101,24 @@ class UserRepository @Inject constructor(
 
     private suspend fun getUserNote(userId: Long): UserNote?{
         return userNoteDao.getNote(userId)
+    }
+
+    suspend fun onNoInternetFailed(): LiveData<Boolean>{
+        return withContext(Dispatchers.IO) {
+            isInternetFailed
+        }
+    }
+
+    suspend fun onUserLoadFailed(): LiveData<Boolean>{
+        return withContext(Dispatchers.IO) {
+            isUserLoadFailed
+        }
+    }
+
+    suspend fun onUserDetailsLoadFailed(): LiveData<Boolean>{
+        return withContext(Dispatchers.IO) {
+            isUserDetailsLoadFailed
+        }
     }
 
     operator fun <T> MutableLiveData<ArrayList<T>>.plusAssign(values: List<T>) {
