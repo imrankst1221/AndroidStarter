@@ -2,7 +2,7 @@
 buildscript {
     ext {
         compileSdkVersion = 30
-        minSdkVersion = 21
+        minSdkVersion = 24
         targetSdkVersion = 30
 
         glideVersion = '4.10.0'

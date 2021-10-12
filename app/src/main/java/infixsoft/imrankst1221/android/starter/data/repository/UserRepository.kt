@@ -24,6 +24,8 @@ class UserRepository @Inject constructor(
     private val userNoteDao: UserNoteDao,
     private val service: UserApiService): SafeApiRequest(){
 
+    var isUserLoadFailed = false
+    var isUserDetailsLoadFailed = false
     private val users = MutableLiveData<ArrayList<User>>()
     private val userDetails = MutableLiveData<UserDetails>()
 
@@ -68,6 +70,7 @@ class UserRepository @Inject constructor(
         if (networkHelper.isNetworkConnected()) {
             val size = users.value?.size ?: 0
             val response = apiRequest { service.getUsers(size) }
+            isUserLoadFailed = false
             if (size > 0){
                 val newList= users.value
                 newList?.addAll(response)
@@ -75,20 +78,24 @@ class UserRepository @Inject constructor(
             }else{
                 users.postValue(response)
             }
+        }else{
+            isUserLoadFailed = true
         }
     }
 
     suspend fun getUserDetails(userName: String): LiveData<UserDetails> {
         return withContext(Dispatchers.IO) {
-            fetchUserDetails(userName)
             userDetailsDao.getUserDetailsByLogin(userName)
         }
     }
 
-    private suspend fun fetchUserDetails(userName: String) {
+    suspend fun fetchUserDetails(userName: String) {
         if (networkHelper.isNetworkConnected()) {
             val response = apiRequest { service.getUserDetails(userName) }
             userDetails.postValue(response)
+            isUserDetailsLoadFailed = false
+        }else{
+            isUserDetailsLoadFailed = true
         }
     }
 
@@ -105,9 +112,4 @@ class UserRepository @Inject constructor(
         value.addAll(values)
         this.value = value
     }
-
-    //fun getUsers() = userDao.getUsers()
-    //fun getUser(userId: Long) = userDao.getUser(userId)
-    //fun getUserDetails(userId: Long) = userDetailsDao.getUserDetails(userId)
-    //fun isUserNote(userId: Long) = userDetailsDao.isUserDetailsAvailable(userId)
 }

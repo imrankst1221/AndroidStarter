@@ -1,6 +1,8 @@
 package infixsoft.imrankst1221.android.starter.ui.views
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
@@ -23,9 +25,10 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>() {
 
     private val TAG = "---UserDetailsFragment"
     val args: UserDetailsFragmentArgs by navArgs()
+
+    lateinit var mContext: Context
     lateinit var userViewModel: UsersViewModel
     lateinit var user: User
-    lateinit var mContext: Context
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -49,7 +52,11 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>() {
 
     private fun setupObserver() = Coroutines.main {
         userViewModel.getUserDetails(user.login).observe(viewLifecycleOwner, { userDetails ->
-            if(userDetails != null) {
+            if(userDetails == null) {
+                Coroutines.main {
+                    userViewModel.fetchUserDetails(user.login)
+                }
+            }else {
                 Glide.with(mContext)
                     .load(userDetails.avatarUrl)
                     .placeholder(R.drawable.placeholder_image)
@@ -61,6 +68,17 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>() {
                 binding.tvCompany.text = userDetails.company
                 binding.tvBlog.text = userDetails.blog
                 binding.tvNote.setText(user.userNote ?: "")
+            }
+        })
+
+        val connectivityManager = mContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                if (userViewModel.isUserDetailsLoadFailed()){
+                    Coroutines.main {
+                        userViewModel.fetchUserDetails(user.login)
+                    }
+                }
             }
         })
     }

@@ -2,6 +2,8 @@ package infixsoft.imrankst1221.android.starter.ui.views
 
 import android.app.SearchManager
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Bundle
 import android.view.*
 import android.widget.EditText
@@ -25,6 +27,7 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
     override fun setBinding(): FragmentUserListBinding =
         FragmentUserListBinding.inflate(layoutInflater)
 
+    lateinit var mContext: Context
     lateinit var userViewModel: UsersViewModel
     lateinit var userAdapter: UserAdapter
     private lateinit var searchView: SearchView
@@ -33,6 +36,7 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userViewModel = (activity as MainActivity).userViewModel
+        mContext = (activity as MainActivity).applicationContext
         setupUI(view)
         setupRecyclerView()
         setupObserver()
@@ -83,8 +87,22 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
                 Coroutines.main {
                     userViewModel.loadMoreUsers()
                 }
+                binding.itemErrorMessage.root.visibility = View.VISIBLE
+            }else{
+                userAdapter.submitList(it)
+                binding.itemErrorMessage.root.visibility = View.GONE
             }
-            userAdapter.submitList(it)
+        })
+
+        val connectivityManager = mContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                if (userViewModel.isUserLoadFailed()){
+                    Coroutines.main {
+                        userViewModel.loadMoreUsers()
+                    }
+                }
+            }
         })
     }
 

@@ -18,5 +18,9 @@ class UsersViewModel @Inject internal constructor(
     suspend fun getUserList() =  userRepository.getUsers()
     suspend fun loadMoreUsers() =  userRepository.loadMoreUsers()
     suspend fun getUserDetails(userName: String) = userRepository.getUserDetails(userName)
+    suspend fun fetchUserDetails(userName: String) = userRepository.fetchUserDetails(userName)
     suspend fun storeUserNote(note: UserNote) = userRepository.storeUserNote(note)
+
+    fun isUserLoadFailed() = userRepository.isUserLoadFailed
+    fun isUserDetailsLoadFailed() = userRepository.isUserDetailsLoadFailed
 }
