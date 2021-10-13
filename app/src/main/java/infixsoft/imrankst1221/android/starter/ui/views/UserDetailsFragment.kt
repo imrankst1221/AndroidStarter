@@ -44,6 +44,7 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>() {
         supportActionBar?.title = user.login
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        binding.shimmerViewContainer.startShimmer()
         binding.itemNoInternet.btnRetry.setOnClickListener {
             fetchUserDetails(user.login)
         }
@@ -79,6 +80,8 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>() {
                 binding.tvBlog.text = userDetails.blog
                 binding.tvNote.setText(user.userNote ?: "")
 
+                binding.shimmerViewContainer.stopShimmer()
+                binding.shimmerViewContainer.hideShimmer()
                 binding.itemNoInternet.root.visibility = View.GONE
                 binding.itemErrorMessage.root.visibility = View.GONE
             }

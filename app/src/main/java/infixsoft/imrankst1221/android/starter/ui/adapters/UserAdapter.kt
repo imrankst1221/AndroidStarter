@@ -13,6 +13,12 @@ import infixsoft.imrankst1221.android.starter.R
 import infixsoft.imrankst1221.android.starter.data.model.User
 import infixsoft.imrankst1221.android.starter.databinding.ItemUserBinding
 import okhttp3.internal.notify
+import android.graphics.ColorMatrixColorFilter
+
+import android.graphics.ColorMatrix
+import com.bumptech.glide.request.RequestOptions
+import infixsoft.imrankst1221.android.starter.utilities.Constants
+
 
 /**
  * @author imran.choudhury
@@ -57,8 +63,15 @@ class UserAdapter: RecyclerView.Adapter<UserAdapter.AdapterViewHolder>(), Filter
         with(holder) {
             Glide.with(itemView.context)
                 .load(user.avatarUrl)
+                .apply(RequestOptions.circleCropTransform())
                 .placeholder(R.drawable.placeholder_image)
                 .into(binding.ivUserProfile)
+
+            if ((position + 1) % 4 == 0) {
+                binding.ivUserProfile.colorFilter = ColorMatrixColorFilter(Constants.NEGATIVE)
+            }else{
+                binding.ivUserProfile.clearColorFilter()
+            }
 
             if(user.userNote.isNullOrEmpty()){
                 binding.ivNote.visibility = View.GONE
@@ -82,15 +95,14 @@ class UserAdapter: RecyclerView.Adapter<UserAdapter.AdapterViewHolder>(), Filter
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence): FilterResults {
-
                 val filteredList: MutableList<User> = ArrayList()
                 if (constraint == null || constraint.length === 0) {
                     filteredList.addAll(mFullList)
                 } else {
-                    val filterPattern: String = constraint.toString().toLowerCase().trim()
+                    val filterPattern: String = constraint.toString().trim()
                     for (store in mFullList) {
                         if (store.login.contains(filterPattern) ||
-                            (store.userNote != null && store.userNote.contains(filterPattern))) {
+                            (store.userNote != null && store.userNote.toLowerCase().contains(filterPattern.toLowerCase()))) {
                             filteredList.add(store)
                         }
                     }

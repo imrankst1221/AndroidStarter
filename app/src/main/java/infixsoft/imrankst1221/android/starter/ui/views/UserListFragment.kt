@@ -47,6 +47,7 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
         supportActionBar?.title = getString(R.string.app_name)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
+        binding.shimmerViewContainer.startShimmer()
         binding.itemNoInternet.btnRetry.setOnClickListener {
             loadMoreUsers()
         }
@@ -92,6 +93,8 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
                 loadMoreUsers()
             }else{
                 userAdapter.submitList(it)
+                binding.shimmerViewContainer.stopShimmer()
+                binding.shimmerViewContainer.hideShimmer()
                 binding.itemNoInternet.root.visibility = View.GONE
                 binding.itemErrorMessage.root.visibility = View.GONE
             }
