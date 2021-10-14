@@ -93,7 +93,7 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>() {
             }
         })
 
-        userViewModel.onUserLoadFailed().observe(viewLifecycleOwner, {
+        userViewModel.onUserDetailsLoadFailed().observe(viewLifecycleOwner, {
             waitingForNetwork = it
         })
 

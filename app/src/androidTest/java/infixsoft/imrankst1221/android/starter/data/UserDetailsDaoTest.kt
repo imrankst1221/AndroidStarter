@@ -4,13 +4,17 @@ import androidx.room.Room
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import infixsoft.imrankst1221.android.starter.data.model.User
 import infixsoft.imrankst1221.android.starter.data.model.UserDetails
 import infixsoft.imrankst1221.android.starter.data.model.UserDetailsDao
 import infixsoft.imrankst1221.android.starter.utilities.getLiveDataValue
+import infixsoft.imrankst1221.android.starter.data.TestDataSet.user1
+import infixsoft.imrankst1221.android.starter.data.TestDataSet.user2
+import infixsoft.imrankst1221.android.starter.data.TestDataSet.user3
+import infixsoft.imrankst1221.android.starter.data.TestDataSet.user1Details
+import infixsoft.imrankst1221.android.starter.data.TestDataSet.user2Details
+import infixsoft.imrankst1221.android.starter.data.TestDataSet.user3Details
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -26,14 +30,6 @@ import kotlin.jvm.Throws
 class UserDetailsDaoTest {
     private lateinit var database: AppDatabase
     private lateinit var userDetailsDao: UserDetailsDao
-    private val user1 = User(1, "mojombo", "https://avatars.githubusercontent.com/u/1?v=4","")
-    private val user2 = User(2, "defunkt", "https://avatars.githubusercontent.com/u/2?v=4","")
-    private val user3 = User(3, "defunkt", "https://avatars.githubusercontent.com/u/4?v=4","")
-
-    private val userDetails1 = UserDetails(user1.userId, "mojombo","Tom Preston-Werner", "https://avatars.githubusercontent.com/u/1?v=4",1, 1, "GitHub, Inc.", "")
-    private val userDetails2 = UserDetails(user2.userId, "defunkt","Chris Wanstrath", "https://avatars.githubusercontent.com/u/2?v=4",1, 1, "GitHub, Inc.", "")
-    private val userDetails3 = UserDetails(user3.userId, "defunkt","San Francisco", "https://avatars.githubusercontent.com/u/4?v=4",1, 1, "GitHub, Inc.", "")
-
 
     @Before fun createDb() = runBlocking{
         val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -50,16 +46,16 @@ class UserDetailsDaoTest {
     private fun insertUserDetails() = runBlocking{
         database.userDaoDao().insertAll(listOf(user1, user2, user3))
 
-        userDetailsDao.insertUserDetails(userDetails1)
-        userDetailsDao.insertUserDetails(userDetails2)
-        userDetailsDao.insertUserDetails(userDetails3)
+        userDetailsDao.insertUserDetails(user1Details)
+        userDetailsDao.insertUserDetails(user2Details)
+        userDetailsDao.insertUserDetails(user3Details)
     }
 
     @Throws(InterruptedException::class)
     fun testUserDetailsByLogin() = runBlocking{
-        assertThat(getLiveDataValue(userDetailsDao.getUserDetailsByLogin(user1.login)), equalTo(userDetails1))
-        assertThat(getLiveDataValue(userDetailsDao.getUserDetailsByLogin(user2.login)), equalTo(userDetails2))
-        assertThat(getLiveDataValue(userDetailsDao.getUserDetailsByLogin(user3.login)), equalTo(userDetails3))
+        assertThat(getLiveDataValue(userDetailsDao.getUserDetailsByLogin(user1.login)), equalTo(user1Details))
+        assertThat(getLiveDataValue(userDetailsDao.getUserDetailsByLogin(user2.login)), equalTo(user2Details))
+        assertThat(getLiveDataValue(userDetailsDao.getUserDetailsByLogin(user3.login)), equalTo(user3Details))
     }
 
     @Test fun testIsUserDetailsAvailable() = runBlocking {
@@ -73,9 +69,9 @@ class UserDetailsDaoTest {
     }
 
     @Test fun testGetUserDetails() = runBlocking {
-        assertThat(userDetailsDao.getUserDetails(1), equalTo(userDetails1))
-        assertThat(userDetailsDao.getUserDetails(2), equalTo(userDetails2))
-        assertThat(userDetailsDao.getUserDetails(3), equalTo(userDetails3))
+        assertThat(userDetailsDao.getUserDetails(1), equalTo(user1Details))
+        assertThat(userDetailsDao.getUserDetails(2), equalTo(user2Details))
+        assertThat(userDetailsDao.getUserDetails(3), equalTo(user3Details))
     }
 
     @Test fun testUpdateAllUserDetails() = runBlocking{

@@ -1,6 +1,7 @@
 package infixsoft.imrankst1221.android.starter.data
 
 import android.content.Context
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.room.Room
 import androidx.test.espresso.matcher.ViewMatchers
@@ -8,15 +9,20 @@ import androidx.test.platform.app.InstrumentationRegistry
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import infixsoft.imrankst1221.android.starter.MainCoroutineRule
+import infixsoft.imrankst1221.android.starter.data.model.UserNote
 import infixsoft.imrankst1221.android.starter.data.repository.UserRepository
 import infixsoft.imrankst1221.android.starter.runBlockingTest
 import infixsoft.imrankst1221.android.starter.ui.viewmodels.UsersViewModel
+import junit.framework.Assert.assertEquals
+import kotlinx.coroutines.*
+import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.Matchers
-import org.junit.After
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
+import org.junit.*
+import org.junit.rules.RuleChain
 import javax.inject.Inject
+import kotlin.concurrent.thread
+import kotlin.coroutines.resume
 import kotlin.jvm.Throws
 
 /**
@@ -25,11 +31,19 @@ import kotlin.jvm.Throws
  */
 
 @HiltAndroidTest
+@ExperimentalCoroutinesApi
 class UsersViewModelTest {
     private lateinit var appDatabase: AppDatabase
     private lateinit var usersViewModel: UsersViewModel
     private val hiltRule = HiltAndroidRule(this)
     private val coroutineRule = MainCoroutineRule()
+    private val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val rule = RuleChain
+        .outerRule(hiltRule)
+        .around(instantTaskExecutorRule)
+        .around(coroutineRule)
 
     @Inject
     lateinit var userRepository: UserRepository
@@ -50,9 +64,7 @@ class UsersViewModelTest {
     @Suppress("BlockingMethodInNonBlockingContext")
     @Test
     @Throws(InterruptedException::class)
-    fun testDefaultValues() = coroutineRule.runBlockingTest {
+    fun testDefaultValues() = runBlocking(){
         usersViewModel.loadMoreUsers()
-        val userList = usersViewModel.getUserList()
-        ViewMatchers.assertThat(userList.value?.size, Matchers.equalTo(30))
     }
 }

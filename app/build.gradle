@@ -17,7 +17,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "infixsoft.imrankst1221.android.starter.utilities.MainTestRunner"
 
         buildConfigField 'String', 'BASE_URL', "\"https://api.github.com/\""
     }
@@ -89,8 +89,12 @@ dependencies {
     // Testing dependencies
     testImplementation 'junit:junit:4.13.2'
     testImplementation "androidx.arch.core:core-testing:$rootProject.testCoreJunit"
+    kaptAndroidTest "com.google.dagger:hilt-android-compiler:$rootProject.hiltVersion"
     androidTestImplementation "androidx.test.ext:junit:$rootProject.testExtJunit"
     androidTestImplementation "androidx.arch.core:core-testing:$rootProject.testCoreJunit"
+    androidTestImplementation "androidx.test:core-ktx:$rootProject.testCore"
+    debugImplementation "androidx.fragment:fragment-testing:$rootProject.testFragment"
+
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$rootProject.espressoVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.espressoVersion"
     androidTestImplementation "androidx.test.espresso:espresso-intents:$rootProject.espressoVersion"

@@ -5,6 +5,9 @@ import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import infixsoft.imrankst1221.android.starter.MainCoroutineRule
+import infixsoft.imrankst1221.android.starter.data.TestDataSet.user1
+import infixsoft.imrankst1221.android.starter.data.TestDataSet.user2
+import infixsoft.imrankst1221.android.starter.data.TestDataSet.user3
 import infixsoft.imrankst1221.android.starter.data.model.User
 import infixsoft.imrankst1221.android.starter.data.model.UserDao
 import infixsoft.imrankst1221.android.starter.utilities.getLiveDataValue
@@ -29,9 +32,6 @@ class UserDaoTest {
 
     private lateinit var database: AppDatabase
     private lateinit var userDao: UserDao
-    val user1 = User(1, "mojombo", "https://avatars.githubusercontent.com/u/1?v=4", "")
-    val user2 = User(2, "defunkt", "https://avatars.githubusercontent.com/u/2?v=4", "")
-    val user3 = User(3, "defunkt", "https://avatars.githubusercontent.com/u/4?v=4", "")
 
     @Before fun createDb() = runBlocking{
         val context = InstrumentationRegistry.getInstrumentation().targetContext

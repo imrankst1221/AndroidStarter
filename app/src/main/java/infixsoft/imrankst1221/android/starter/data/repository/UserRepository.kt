@@ -68,7 +68,7 @@ class UserRepository @Inject constructor(
             if (size > 0){
                 val newList= users.value
                 newList?.addAll(response)
-                users.postValue(newList)
+                users.postValue(newList!!)
             }else{
                 users.postValue(response)
             }

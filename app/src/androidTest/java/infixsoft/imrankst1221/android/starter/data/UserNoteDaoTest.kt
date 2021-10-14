@@ -4,16 +4,19 @@ import androidx.room.Room
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import infixsoft.imrankst1221.android.starter.data.TestDataSet.user1
+import infixsoft.imrankst1221.android.starter.data.TestDataSet.user1Note
+import infixsoft.imrankst1221.android.starter.data.TestDataSet.user2
+import infixsoft.imrankst1221.android.starter.data.TestDataSet.user2Note
+import infixsoft.imrankst1221.android.starter.data.TestDataSet.user3
+import infixsoft.imrankst1221.android.starter.data.TestDataSet.user3Note
 import infixsoft.imrankst1221.android.starter.data.model.*
-import infixsoft.imrankst1221.android.starter.utilities.getLiveDataValue
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import kotlin.jvm.Throws
 
 /**
  * @author imran.choudhury
@@ -24,13 +27,6 @@ import kotlin.jvm.Throws
 class UserNoteDaoTest {
     private lateinit var database: AppDatabase
     private lateinit var userNoteDao: UserNoteDao
-    private val user1 = User(1, "mojombo", "https://avatars.githubusercontent.com/u/1?v=4","")
-    private val user2 = User(2, "defunkt", "https://avatars.githubusercontent.com/u/2?v=4","")
-    private val user3 = User(3, "defunkt", "https://avatars.githubusercontent.com/u/4?v=4","")
-
-    private val user1Note = UserNote(user1.userId, "User 1 note")
-    private val user2Note = UserNote(user2.userId, "User 2 note")
-    private val user3Note = UserNote(user3.userId, "User 3 note")
 
     @Before fun createDb() = runBlocking{
         val context = InstrumentationRegistry.getInstrumentation().targetContext
