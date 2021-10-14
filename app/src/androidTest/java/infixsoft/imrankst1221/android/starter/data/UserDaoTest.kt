@@ -5,9 +5,9 @@ import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import infixsoft.imrankst1221.android.starter.MainCoroutineRule
-import infixsoft.imrankst1221.android.starter.data.TestDataSet.user1
-import infixsoft.imrankst1221.android.starter.data.TestDataSet.user2
-import infixsoft.imrankst1221.android.starter.data.TestDataSet.user3
+import infixsoft.imrankst1221.android.starter.data.DummyDataSet.DUMMY_USER1
+import infixsoft.imrankst1221.android.starter.data.DummyDataSet.DUMMY_USER2
+import infixsoft.imrankst1221.android.starter.data.DummyDataSet.DUMMY_USER3
 import infixsoft.imrankst1221.android.starter.data.model.User
 import infixsoft.imrankst1221.android.starter.data.model.UserDao
 import infixsoft.imrankst1221.android.starter.utilities.getLiveDataValue
@@ -46,7 +46,7 @@ class UserDaoTest {
     }
 
     private fun insertUsers() = runBlocking{
-        userDao.insertAll(listOf(user1, user2, user3))
+        userDao.insertAll(listOf(DUMMY_USER1, DUMMY_USER2, DUMMY_USER3))
     }
 
     @Throws(InterruptedException::class)
@@ -55,9 +55,9 @@ class UserDaoTest {
         assertThat(userItems.size, Matchers.equalTo(3))
 
         assertThat(userItems.size, Matchers.equalTo(3))
-        assertThat(userItems[0], equalTo(user1))
-        assertThat(userItems[1], equalTo(user2))
-        assertThat(userItems[2], equalTo(user3))
+        assertThat(userItems[0], equalTo(DUMMY_USER1))
+        assertThat(userItems[1], equalTo(DUMMY_USER2))
+        assertThat(userItems[2], equalTo(DUMMY_USER3))
     }
 
 
@@ -66,9 +66,9 @@ class UserDaoTest {
         val userItems = getLiveDataValue(userDao.getUsersWithNote())
 
         assertThat(userItems.size, Matchers.equalTo(3))
-        assertThat(userItems[0], equalTo(user1))
-        assertThat(userItems[1], equalTo(user2))
-        assertThat(userItems[2], equalTo(user3))
+        assertThat(userItems[0], equalTo(DUMMY_USER1))
+        assertThat(userItems[1], equalTo(DUMMY_USER2))
+        assertThat(userItems[2], equalTo(DUMMY_USER3))
     }
 
     @Test fun testUpdateAllUser() = runBlocking{

@@ -28,10 +28,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -74,8 +82,6 @@ dependencies {
     implementation "androidx.room:room-ktx:$rootProject.roomVersion"
     implementation "androidx.work:work-runtime-ktx:$rootProject.workVersion"
 
-    implementation "com.github.bumptech.glide:glide:$rootProject.glideVersion"
-
     implementation "com.google.android.material:material:$rootProject.materialVersion"
     implementation "com.google.code.gson:gson:$rootProject.gsonVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttpLoggingVersion"
@@ -84,6 +90,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutinesVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.coroutinesVersion"
 
+    implementation "com.github.bumptech.glide:glide:$rootProject.glideVersion"
     implementation "com.facebook.shimmer:shimmer:$rootProject.shimmerVersion"
 
     // Testing dependencies
@@ -91,14 +98,15 @@ dependencies {
     testImplementation "androidx.arch.core:core-testing:$rootProject.testCoreJunit"
     kaptAndroidTest "com.google.dagger:hilt-android-compiler:$rootProject.hiltVersion"
     androidTestImplementation "androidx.test.ext:junit:$rootProject.testExtJunit"
-    androidTestImplementation "androidx.arch.core:core-testing:$rootProject.testCoreJunit"
     androidTestImplementation "androidx.test:core-ktx:$rootProject.testCore"
+    androidTestImplementation "androidx.arch.core:core-testing:$rootProject.testCoreJunit"
+    androidTestImplementation "org.robolectric:robolectric:$rootProject.robolectric"
     debugImplementation "androidx.fragment:fragment-testing:$rootProject.testFragment"
 
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$rootProject.espressoVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.espressoVersion"
     androidTestImplementation "androidx.test.espresso:espresso-intents:$rootProject.espressoVersion"
     androidTestImplementation "com.google.dagger:hilt-android-testing:$rootProject.hiltVersion"
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$rootProject.coroutinesVersion"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$rootProject.coroutinesTest"
 
 }

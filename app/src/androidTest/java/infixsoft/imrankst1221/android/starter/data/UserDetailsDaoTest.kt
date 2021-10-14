@@ -7,12 +7,12 @@ import androidx.test.platform.app.InstrumentationRegistry
 import infixsoft.imrankst1221.android.starter.data.model.UserDetails
 import infixsoft.imrankst1221.android.starter.data.model.UserDetailsDao
 import infixsoft.imrankst1221.android.starter.utilities.getLiveDataValue
-import infixsoft.imrankst1221.android.starter.data.TestDataSet.user1
-import infixsoft.imrankst1221.android.starter.data.TestDataSet.user2
-import infixsoft.imrankst1221.android.starter.data.TestDataSet.user3
-import infixsoft.imrankst1221.android.starter.data.TestDataSet.user1Details
-import infixsoft.imrankst1221.android.starter.data.TestDataSet.user2Details
-import infixsoft.imrankst1221.android.starter.data.TestDataSet.user3Details
+import infixsoft.imrankst1221.android.starter.data.DummyDataSet.DUMMY_USER1
+import infixsoft.imrankst1221.android.starter.data.DummyDataSet.DUMMY_USER2
+import infixsoft.imrankst1221.android.starter.data.DummyDataSet.DUMMY_USER3
+import infixsoft.imrankst1221.android.starter.data.DummyDataSet.DUMMY_USER1_DETAILS
+import infixsoft.imrankst1221.android.starter.data.DummyDataSet.DUMMY_USER2_DETAILS
+import infixsoft.imrankst1221.android.starter.data.DummyDataSet.DUMMY_USER3_DETAILS
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.After
@@ -44,18 +44,18 @@ class UserDetailsDaoTest {
     }
 
     private fun insertUserDetails() = runBlocking{
-        database.userDaoDao().insertAll(listOf(user1, user2, user3))
+        database.userDaoDao().insertAll(listOf(DUMMY_USER1, DUMMY_USER2, DUMMY_USER3))
 
-        userDetailsDao.insertUserDetails(user1Details)
-        userDetailsDao.insertUserDetails(user2Details)
-        userDetailsDao.insertUserDetails(user3Details)
+        userDetailsDao.insertUserDetails(DUMMY_USER1_DETAILS)
+        userDetailsDao.insertUserDetails(DUMMY_USER2_DETAILS)
+        userDetailsDao.insertUserDetails(DUMMY_USER3_DETAILS)
     }
 
     @Throws(InterruptedException::class)
     fun testUserDetailsByLogin() = runBlocking{
-        assertThat(getLiveDataValue(userDetailsDao.getUserDetailsByLogin(user1.login)), equalTo(user1Details))
-        assertThat(getLiveDataValue(userDetailsDao.getUserDetailsByLogin(user2.login)), equalTo(user2Details))
-        assertThat(getLiveDataValue(userDetailsDao.getUserDetailsByLogin(user3.login)), equalTo(user3Details))
+        assertThat(getLiveDataValue(userDetailsDao.getUserDetailsByLogin(DUMMY_USER1.login)), equalTo(DUMMY_USER1_DETAILS))
+        assertThat(getLiveDataValue(userDetailsDao.getUserDetailsByLogin(DUMMY_USER2.login)), equalTo(DUMMY_USER2_DETAILS))
+        assertThat(getLiveDataValue(userDetailsDao.getUserDetailsByLogin(DUMMY_USER3.login)), equalTo(DUMMY_USER3_DETAILS))
     }
 
     @Test fun testIsUserDetailsAvailable() = runBlocking {
@@ -69,9 +69,9 @@ class UserDetailsDaoTest {
     }
 
     @Test fun testGetUserDetails() = runBlocking {
-        assertThat(userDetailsDao.getUserDetails(1), equalTo(user1Details))
-        assertThat(userDetailsDao.getUserDetails(2), equalTo(user2Details))
-        assertThat(userDetailsDao.getUserDetails(3), equalTo(user3Details))
+        assertThat(userDetailsDao.getUserDetails(1), equalTo(DUMMY_USER1_DETAILS))
+        assertThat(userDetailsDao.getUserDetails(2), equalTo(DUMMY_USER2_DETAILS))
+        assertThat(userDetailsDao.getUserDetails(3), equalTo(DUMMY_USER3_DETAILS))
     }
 
     @Test fun testUpdateAllUserDetails() = runBlocking{
