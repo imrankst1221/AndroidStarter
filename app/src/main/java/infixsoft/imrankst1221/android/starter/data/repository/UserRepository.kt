@@ -34,6 +34,7 @@ class UserRepository @Inject constructor(
         isInternetFailed.value = false
         isUserLoadFailed.value = false
         isUserDetailsLoadFailed.value = false
+
         users.observeForever{
             saveUsers(it)
         }
@@ -42,7 +43,7 @@ class UserRepository @Inject constructor(
         }
     }
 
-    private fun saveUsers(users: List<User>) {
+    private fun saveUsers(users: ArrayList<User>) {
         Coroutines.io {
             userDao.insertAll(users)
         }
@@ -54,10 +55,12 @@ class UserRepository @Inject constructor(
         }
     }
 
-    suspend fun getUsers(): LiveData<List<User>> {
-        return withContext(Dispatchers.IO) {
-            userDao.getUsersWithNote()
+    fun getUsers(): LiveData<ArrayList<User>> {
+        Coroutines.io {
+            val usersWithNote = userDao.getUsersWithNote()
+            users.postValue(ArrayList(usersWithNote))
         }
+        return users
     }
 
     suspend fun loadMoreUsers() {
@@ -65,13 +68,7 @@ class UserRepository @Inject constructor(
             val size = users.value?.size ?: 0
             val response = apiRequest { service.getUsers(size) }
             isUserLoadFailed.value = false
-            if (size > 0){
-                val newList= users.value
-                newList?.addAll(response)
-                users.postValue(newList!!)
-            }else{
-                users.postValue(response)
-            }
+            users.postValue(response)
         }else{
             isInternetFailed.value = true
             isUserLoadFailed.value = true

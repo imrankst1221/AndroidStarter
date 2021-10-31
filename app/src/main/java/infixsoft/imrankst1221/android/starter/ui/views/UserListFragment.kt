@@ -28,21 +28,21 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
 
     lateinit var mContext: Context
     lateinit var userViewModel: UsersViewModel
-    lateinit var userAdapter: UserAdapter
     private lateinit var searchView: SearchView
     private lateinit var onScrollListener: EndlessRecyclerOnScrollListener
+    private var userAdapter: UserAdapter = UserAdapter()
     private var waitingForNetwork = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userViewModel = (activity as MainActivity).userViewModel
         mContext = (activity as MainActivity).applicationContext
-        setupUI(view)
+        setupUI()
         setupRecyclerView()
         setupObserver()
     }
 
-    private fun setupUI(view: View) {
+    private fun setupUI() {
         val supportActionBar = (activity as AppCompatActivity?)!!.supportActionBar
         supportActionBar?.title = getString(R.string.app_name)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
@@ -64,7 +64,6 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
     }
 
     private fun setupRecyclerView() {
-        userAdapter = UserAdapter()
         binding.rvUsers.apply {
             adapter = userAdapter
             layoutManager = LinearLayoutManager(activity)
@@ -83,6 +82,7 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
 
     private fun loadMoreUsers(){
         Coroutines.main {
+            binding.progressBar.visibility = View.VISIBLE
             userViewModel.loadMoreUsers()
         }
     }
@@ -97,6 +97,7 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
                 binding.shimmerViewContainer.hideShimmer()
                 binding.itemNoInternet.root.visibility = View.GONE
                 binding.itemErrorMessage.root.visibility = View.GONE
+                binding.progressBar.visibility = View.GONE
             }
         })
 
