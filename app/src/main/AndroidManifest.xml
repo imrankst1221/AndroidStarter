@@ -17,6 +17,8 @@
         android:theme="@style/Theme.AndroidStarter">
         <activity
             android:name=".ui.views.MainActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:windowSoftInputMode="adjustResize|stateHidden"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

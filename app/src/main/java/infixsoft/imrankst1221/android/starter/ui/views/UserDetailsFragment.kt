@@ -1,10 +1,12 @@
 package infixsoft.imrankst1221.android.starter.ui.views
 
 import android.content.Context
+import android.graphics.Rect
 import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Bundle
 import android.view.*
+import android.widget.ScrollView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.navArgs
@@ -16,23 +18,34 @@ import infixsoft.imrankst1221.android.starter.data.model.UserNote
 import infixsoft.imrankst1221.android.starter.databinding.FragmentUserDetailsBinding
 import infixsoft.imrankst1221.android.starter.ui.viewmodels.UsersViewModel
 import infixsoft.imrankst1221.android.starter.utilities.Coroutines
+import kotlin.math.abs
+import android.view.ViewTreeObserver
+import android.os.Build
 
-class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>() {
+import android.annotation.SuppressLint
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import infixsoft.imrankst1221.android.starter.utilities.Extensions.scrollToBottomWithoutFocusChange
+
+
+class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>(), OnGlobalLayoutListener {
     override fun setBinding(): FragmentUserDetailsBinding =
         FragmentUserDetailsBinding.inflate(layoutInflater)
 
     private val TAG = "---UserDetailsFragment"
     val args: UserDetailsFragmentArgs by navArgs()
 
+    lateinit var mRootView: View
     lateinit var mContext: Context
     lateinit var userViewModel: UsersViewModel
     lateinit var user: User
+    private var isGlobalLayoutListener = true
     private var waitingForNetwork = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userViewModel = (activity as MainActivity).userViewModel
         mContext = (activity as MainActivity).applicationContext
+        mRootView = view
         setupUI(view)
         setupObserver()
         setupOnClick()
@@ -43,6 +56,7 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>() {
         val supportActionBar = (activity as AppCompatActivity?)!!.supportActionBar
         supportActionBar?.title = user.login
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.scrollRoot.viewTreeObserver.addOnGlobalLayoutListener(this)
 
         binding.shimmerViewContainer.startShimmer()
         binding.itemNoInternet.btnRetry.setOnClickListener {
@@ -122,5 +136,22 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>() {
                 Toast.makeText(mContext, "Save success!", Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    override fun onGlobalLayout() {
+        if(isGlobalLayoutListener) {
+            val r = Rect()
+            mRootView.getWindowVisibleDisplayFrame(r)
+            if (abs(mRootView.rootView.height - (r.bottom - r.top)) > 100) {
+                binding.scrollRoot.scrollToBottomWithoutFocusChange()
+            }
+        }else{
+            mRootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+        }
+    }
+
+    override fun onDestroyView() {
+        isGlobalLayoutListener = false
+        super.onDestroyView()
     }
 }

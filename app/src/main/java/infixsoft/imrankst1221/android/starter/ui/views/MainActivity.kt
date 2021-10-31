@@ -1,9 +1,11 @@
 package infixsoft.imrankst1221.android.starter.ui.views
 
+import android.app.PendingIntent.getActivity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -27,13 +29,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     override fun onViewReady(savedInstanceState: Bundle?) {
         super.onViewReady(savedInstanceState)
         setSupportActionBar(binding.toolbar)
-        if (savedInstanceState == null) {
-            setupBottomNavigationBar()
-        }
+        initView()
     }
 
-    private fun setupBottomNavigationBar() {
-       //TODO
+    private fun initView(){
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
