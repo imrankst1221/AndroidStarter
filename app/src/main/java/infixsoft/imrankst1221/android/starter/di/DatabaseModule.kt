@@ -3,6 +3,8 @@ package infixsoft.imrankst1221.android.starter.di
 /**
  * @author imran.choudhury
  * 19/9/21
+ *
+ * DatabaseModule provider
  */
 
 import android.content.Context

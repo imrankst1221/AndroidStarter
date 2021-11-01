@@ -9,6 +9,9 @@ import javax.inject.Singleton
 /**
  * @author imran.choudhury
  * 4/10/21
+ *
+ * Preference helper
+ * @param context is application context
  */
 
 private const val KEY_SAVED_AT = "key_saved_at"

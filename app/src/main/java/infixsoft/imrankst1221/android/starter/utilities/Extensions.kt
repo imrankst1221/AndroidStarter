@@ -5,6 +5,8 @@ import android.widget.ScrollView
 /**
  * @author imran.choudhury
  * 31/10/21
+ *
+ * Android Extensions helper
  */
 object Extensions {
     fun ScrollView.scrollToBottomWithoutFocusChange() {

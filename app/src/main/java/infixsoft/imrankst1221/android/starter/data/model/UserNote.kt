@@ -1,13 +1,15 @@
 package infixsoft.imrankst1221.android.starter.data.model
 
-import androidx.room.*
-import com.google.gson.annotations.SerializedName
-
 /**
  * @author imran.choudhury
  * 8/10/21
+ *
+ * User note model
  */
 
+
+import androidx.room.*
+import com.google.gson.annotations.SerializedName
 
 @Entity(
     tableName = "userNote",

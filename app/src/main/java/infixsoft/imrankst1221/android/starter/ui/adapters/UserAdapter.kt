@@ -23,6 +23,8 @@ import infixsoft.imrankst1221.android.starter.utilities.Constants
 /**
  * @author imran.choudhury
  * 6/10/21
+ *
+ * UserAdapter recycler adapter for user list
  */
 
 class UserAdapter: RecyclerView.Adapter<UserAdapter.AdapterViewHolder>(), Filterable {
@@ -67,17 +69,20 @@ class UserAdapter: RecyclerView.Adapter<UserAdapter.AdapterViewHolder>(), Filter
                 .placeholder(R.drawable.placeholder_image)
                 .into(binding.ivUserProfile)
 
+            // profile inverted logic
             if ((position + 1) % 4 == 0) {
                 binding.ivUserProfile.colorFilter = ColorMatrixColorFilter(Constants.NEGATIVE)
             }else{
                 binding.ivUserProfile.clearColorFilter()
             }
 
+            // show note icon
             if(user.userNote.isNullOrEmpty()){
                 binding.ivNote.visibility = View.GONE
             }else{
                 binding.ivNote.visibility = View.VISIBLE
             }
+
             binding.tvUserId.text = user.login
             //TODO set user details
             //binding.tvUserDetails.text = user.login
@@ -92,6 +97,7 @@ class UserAdapter: RecyclerView.Adapter<UserAdapter.AdapterViewHolder>(), Filter
         }
     }
 
+    // filter for search data
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence): FilterResults {
@@ -123,6 +129,7 @@ class UserAdapter: RecyclerView.Adapter<UserAdapter.AdapterViewHolder>(), Filter
         return differ.currentList.size
     }
 
+    // item click listener
     fun setOnItemClickListener(listener: (User) -> Unit) {
         onItemClickListener = listener
     }

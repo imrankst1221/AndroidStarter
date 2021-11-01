@@ -1,13 +1,15 @@
 package infixsoft.imrankst1221.android.starter.data.model
+/**
+ * @author imran.choudhury
+ * 18/9/21
+ *
+ * User details model
+ */
+
 
 import androidx.room.*
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
-
-/**
- * @author imran.choudhury
- * 18/9/21
- */
 
 @Entity(
     tableName = "user_details",

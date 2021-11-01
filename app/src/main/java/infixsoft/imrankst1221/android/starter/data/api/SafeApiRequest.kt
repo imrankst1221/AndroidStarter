@@ -1,5 +1,12 @@
 package infixsoft.imrankst1221.android.starter.data.api
 
+/**
+ * @author imran.choudhury
+ * 30/9/21
+ *
+ * SafeApiRequest helper
+ */
+
 import infixsoft.imrankst1221.android.starter.utilities.ApiException
 import retrofit2.Response
 import java.lang.IllegalStateException

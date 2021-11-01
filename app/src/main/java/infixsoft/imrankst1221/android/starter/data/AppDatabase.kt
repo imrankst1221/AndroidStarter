@@ -11,7 +11,9 @@ import infixsoft.imrankst1221.android.starter.utilities.Constants
 /**
  * @author imran.choudhury
  * 18/9/21
- * The Room database for this app
+ *
+ * AppDatabase is Room database helper
+ *
  */
 
 

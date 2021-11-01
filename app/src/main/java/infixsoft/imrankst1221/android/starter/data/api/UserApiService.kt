@@ -1,4 +1,10 @@
 package infixsoft.imrankst1221.android.starter.data.api
+/**
+ * @author imran.choudhury
+ * 30/9/21
+ *
+ * UserApiService provider
+ */
 
 import infixsoft.imrankst1221.android.starter.BuildConfig
 import infixsoft.imrankst1221.android.starter.data.model.User
@@ -15,12 +21,6 @@ import retrofit2.http.Query
 import android.os.SystemClock
 import okhttp3.Interceptor
 import java.io.IOException
-
-
-/**
- * @author imran.choudhury
- * 30/9/21
- */
 
 interface UserApiService {
     @GET("users")

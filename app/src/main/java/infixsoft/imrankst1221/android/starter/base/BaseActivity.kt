@@ -1,14 +1,13 @@
 package infixsoft.imrankst1221.android.starter.base
+/**
+ * @author imran.choudhury
+ * 6/10/21
+ */
 
 import android.os.Bundle
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
-
-/**
- * @author imran.choudhury
- * 6/10/21
- */
 
 abstract class BaseActivity<T : ViewBinding> : AppCompatActivity() {
     protected lateinit var binding: T

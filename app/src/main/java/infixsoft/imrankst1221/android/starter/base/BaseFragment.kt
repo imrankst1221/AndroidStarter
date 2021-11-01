@@ -1,4 +1,8 @@
 package infixsoft.imrankst1221.android.starter.base
+/**
+ * @author imran.choudhury
+ * 6/10/21
+ */
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,11 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-
-/**
- * @author imran.choudhury
- * 6/10/21
- */
 
 abstract class BaseFragment<T : ViewBinding> : Fragment() {
 

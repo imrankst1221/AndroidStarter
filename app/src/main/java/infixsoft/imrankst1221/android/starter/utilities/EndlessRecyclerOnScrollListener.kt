@@ -8,10 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 /**
  * @author imran.choudhury
  * 6/10/21
+ *
+ * Endless Recycler Scroll Listener
+ * @param  threshHold is scroll threshold
  */
 
 abstract class EndlessRecyclerOnScrollListener(
-    private val threshHold: Int = Constants.QUERY_PER_PAGE
+    private val threshHold: Int
 ) : RecyclerView.OnScrollListener() {
 
     var isError = false

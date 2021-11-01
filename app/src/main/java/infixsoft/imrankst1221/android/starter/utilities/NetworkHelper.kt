@@ -11,11 +11,14 @@ import javax.inject.Singleton
 /**
  * @author imran.choudhury
  * 6/10/21
+ *
+ * Network Helper
+ * @param context is application context
  */
 
 @Singleton
 class NetworkHelper @Inject constructor(@ApplicationContext private val context: Context) {
-
+    // provide network availability
     fun isNetworkConnected(): Boolean {
         var result = false
         val connectivityManager =

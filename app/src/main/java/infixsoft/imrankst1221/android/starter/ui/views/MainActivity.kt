@@ -1,4 +1,11 @@
 package infixsoft.imrankst1221.android.starter.ui.views
+/**
+ * @author imran.choudhury
+ * 1/11/21
+ *
+ * MainActivity contain all fragments
+ */
+
 
 import android.app.PendingIntent.getActivity
 import androidx.appcompat.app.AppCompatActivity
@@ -34,7 +41,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     private fun initView(){
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

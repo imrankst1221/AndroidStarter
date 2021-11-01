@@ -1,4 +1,10 @@
 package infixsoft.imrankst1221.android.starter.ui.views
+/**
+ * @author imran.choudhury
+ * 1/11/21
+ *
+ * UserListFragment UI fir user list
+ */
 
 import android.app.SearchManager
 import android.content.Context
@@ -31,7 +37,11 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
     private lateinit var searchView: SearchView
     private lateinit var onScrollListener: EndlessRecyclerOnScrollListener
     private var userAdapter: UserAdapter = UserAdapter()
+
+    // network failed for network flag
     private var waitingForNetwork = false
+    // unregister observer
+    private var isFragmentAvailable = true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,6 +50,7 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
         setupUI()
         setupRecyclerView()
         setupObserver()
+        isFragmentAvailable = true
     }
 
     private fun setupUI() {
@@ -47,15 +58,18 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
         supportActionBar?.title = getString(R.string.app_name)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
+        // skeletons view start
         binding.shimmerViewContainer.startShimmer()
+
+        // on click
         binding.itemNoInternet.btnRetry.setOnClickListener {
             loadMoreUsers()
         }
-
         binding.itemErrorMessage.btnRetry.setOnClickListener {
             loadMoreUsers()
         }
 
+        // on list scroll load more
         onScrollListener = object : EndlessRecyclerOnScrollListener(Constants.QUERY_PER_PAGE) {
             override fun onLoadMore() {
                 loadMoreUsers()
@@ -63,6 +77,7 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
         }
     }
 
+    // init recycler view
     private fun setupRecyclerView() {
         binding.rvUsers.apply {
             adapter = userAdapter
@@ -80,6 +95,7 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
         }
     }
 
+    // load more data
     private fun loadMoreUsers(){
         Coroutines.main {
             binding.progressBar.visibility = View.VISIBLE
@@ -88,6 +104,7 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
     }
 
     private fun setupObserver() = Coroutines.main {
+        // user list data change observer
         userViewModel.getUserList().observe(viewLifecycleOwner, {
             if (it.isEmpty()){
                 loadMoreUsers()
@@ -101,20 +118,23 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
             }
         })
 
+        // no internet n failed observer
         userViewModel.onNoInternetFailed().observe(viewLifecycleOwner, {
             if (it){
                 binding.itemNoInternet.root.visibility = View.VISIBLE
             }
         })
 
+        // wait for internet observer
         userViewModel.onUserLoadFailed().observe(viewLifecycleOwner, {
             waitingForNetwork = it
         })
 
+        // network observer
         val connectivityManager = mContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         connectivityManager.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
-                if (waitingForNetwork){
+                if (waitingForNetwork && isFragmentAvailable){
                     loadMoreUsers()
                 }
             }
@@ -149,6 +169,7 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
         val searchPlateView: View =
             searchView.findViewById(androidx.appcompat.R.id.search_plate)
 
+        // toolbar search listener
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
@@ -185,5 +206,10 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
             searchView.setSearchableInfo(searchManager.getSearchableInfo(it.componentName))
         }
         return super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onDestroyView() {
+        isFragmentAvailable = false
+        super.onDestroyView()
     }
 }

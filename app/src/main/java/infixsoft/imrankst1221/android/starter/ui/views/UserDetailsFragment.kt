@@ -1,4 +1,10 @@
 package infixsoft.imrankst1221.android.starter.ui.views
+/**
+ * @author imran.choudhury
+ * 1/11/21
+ *
+ * UserDetailsFragment UI for user details
+ */
 
 import android.content.Context
 import android.graphics.Rect
@@ -6,7 +12,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Bundle
 import android.view.*
-import android.widget.ScrollView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.navArgs
@@ -19,13 +24,9 @@ import infixsoft.imrankst1221.android.starter.databinding.FragmentUserDetailsBin
 import infixsoft.imrankst1221.android.starter.ui.viewmodels.UsersViewModel
 import infixsoft.imrankst1221.android.starter.utilities.Coroutines
 import kotlin.math.abs
-import android.view.ViewTreeObserver
-import android.os.Build
 
-import android.annotation.SuppressLint
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import infixsoft.imrankst1221.android.starter.utilities.Extensions.scrollToBottomWithoutFocusChange
-
 
 class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>(), OnGlobalLayoutListener {
     override fun setBinding(): FragmentUserDetailsBinding =
@@ -38,8 +39,15 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>(), OnGlobal
     lateinit var mContext: Context
     lateinit var userViewModel: UsersViewModel
     lateinit var user: User
-    private var isGlobalLayoutListener = true
+
+    // unregister observer
+    private var isFragmentAvailable = true
+    // network failed flag
     private var waitingForNetwork = false
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,7 +56,7 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>(), OnGlobal
         mRootView = view
         setupUI(view)
         setupObserver()
-        setupOnClick()
+        isFragmentAvailable = true
     }
 
     private fun setupUI(view: View) {
@@ -56,28 +64,43 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>(), OnGlobal
         val supportActionBar = (activity as AppCompatActivity?)!!.supportActionBar
         supportActionBar?.title = user.login
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.scrollRoot.viewTreeObserver.addOnGlobalLayoutListener(this)
 
+        // skeletons view start
         binding.shimmerViewContainer.startShimmer()
+
+        // on click
         binding.itemNoInternet.btnRetry.setOnClickListener {
             fetchUserDetails(user.login)
         }
-
         binding.itemErrorMessage.btnRetry.setOnClickListener {
             fetchUserDetails(user.login)
         }
+        binding.btnSave.setOnClickListener {
+            if (!binding.tvNote.text.isNullOrEmpty()) {
+                val userNote = UserNote(user.userId, binding.tvNote.text.toString())
+                storeNote(userNote)
+                Toast.makeText(mContext, "Save success!", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
+    // store user note in DB
     private fun storeNote(note: UserNote) = Coroutines.main {
         userViewModel.storeUserNote(note)
     }
 
+    // fetch user not from API
     private fun fetchUserDetails(userName: String){
         Coroutines.main {
             userViewModel.fetchUserDetails(userName)
         }
     }
+
     private fun setupObserver() = Coroutines.main {
+        // keyboard on/off auto scroll observer
+        binding.scrollRoot.viewTreeObserver.addOnGlobalLayoutListener(this)
+
+        // user details data change observer
         userViewModel.getUserDetails(user.login).observe(viewLifecycleOwner, { userDetails ->
             if(userDetails == null) {
                 fetchUserDetails(user.login)
@@ -101,16 +124,19 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>(), OnGlobal
             }
         })
 
+        // no internet API failed observer
         userViewModel.onNoInternetFailed().observe(viewLifecycleOwner, {
             if (it){
                 binding.itemNoInternet.root.visibility = View.VISIBLE
             }
         })
 
+        // wait for internet observer
         userViewModel.onUserDetailsLoadFailed().observe(viewLifecycleOwner, {
             waitingForNetwork = it
         })
 
+        // network observer
         val connectivityManager = mContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         connectivityManager.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
@@ -128,18 +154,9 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>(), OnGlobal
         })
     }
 
-    private fun setupOnClick(){
-        binding.btnSave.setOnClickListener {
-            if (!binding.tvNote.text.isNullOrEmpty()) {
-                val userNote = UserNote(user.userId, binding.tvNote.text.toString())
-                storeNote(userNote)
-                Toast.makeText(mContext, "Save success!", Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
+    // keyboard on/off layout change listener
     override fun onGlobalLayout() {
-        if(isGlobalLayoutListener) {
+        if(isFragmentAvailable) {
             val r = Rect()
             mRootView.getWindowVisibleDisplayFrame(r)
             if (abs(mRootView.rootView.height - (r.bottom - r.top)) > 100) {
@@ -151,7 +168,7 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>(), OnGlobal
     }
 
     override fun onDestroyView() {
-        isGlobalLayoutListener = false
+        isFragmentAvailable = false
         super.onDestroyView()
     }
 }

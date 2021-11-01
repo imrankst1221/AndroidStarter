@@ -14,6 +14,8 @@ import javax.inject.Singleton
 /**
  * @author imran.choudhury
  * 30/9/21
+ *
+ * User Repository
  */
 
 @Singleton
@@ -24,10 +26,15 @@ class UserRepository @Inject constructor(
     private val userNoteDao: UserNoteDao,
     private val service: UserApiService): SafeApiRequest(){
 
+    // notify internet failed
     private val isInternetFailed = MutableLiveData<Boolean>()
+    // notify user list api failed
     private val isUserLoadFailed = MutableLiveData<Boolean>()
+    // notify user details api failed
     private val isUserDetailsLoadFailed = MutableLiveData<Boolean>()
+    // user list
     private val users = MutableLiveData<ArrayList<User>>()
+    // single user details
     private val userDetails = MutableLiveData<UserDetails>()
 
     init {

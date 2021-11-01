@@ -10,6 +10,8 @@ import javax.inject.Singleton
 /**
  * @author imran.choudhury
  * 30/9/21
+ *
+ * NetworkModule provider
  */
 
 @InstallIn(SingletonComponent::class)

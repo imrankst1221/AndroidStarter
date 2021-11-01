@@ -3,6 +3,8 @@ package infixsoft.imrankst1221.android.starter.data.model
 /**
  * @author imran.choudhury
  * 18/9/21
+ *
+ * User model
  */
 
 import androidx.room.ColumnInfo
