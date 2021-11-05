@@ -23,9 +23,11 @@ import infixsoft.imrankst1221.android.starter.base.BaseFragment
 import infixsoft.imrankst1221.android.starter.databinding.FragmentUserListBinding
 import infixsoft.imrankst1221.android.starter.ui.adapters.UserAdapter
 import infixsoft.imrankst1221.android.starter.ui.viewmodels.UsersViewModel
-import infixsoft.imrankst1221.android.starter.utilities.Constants
 import infixsoft.imrankst1221.android.starter.utilities.Coroutines
-import infixsoft.imrankst1221.android.starter.utilities.EndlessRecyclerOnScrollListener
+import androidx.recyclerview.widget.RecyclerView
+
+
+
 
 class UserListFragment : BaseFragment<FragmentUserListBinding>(){
 
@@ -35,7 +37,10 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
     lateinit var mContext: Context
     lateinit var userViewModel: UsersViewModel
     private lateinit var searchView: SearchView
-    private lateinit var onScrollListener: EndlessRecyclerOnScrollListener
+    private var isScrollLoading = true
+    private var pastVisibleItems = 0
+    private var visibleItemCount = 0
+    private var totalItemCount = 0
     private var userAdapter: UserAdapter = UserAdapter()
 
     // network failed for network flag
@@ -68,13 +73,6 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
         binding.itemErrorMessage.btnRetry.setOnClickListener {
             loadMoreUsers()
         }
-
-        // on list scroll load more
-        onScrollListener = object : EndlessRecyclerOnScrollListener(Constants.QUERY_PER_PAGE) {
-            override fun onLoadMore() {
-                loadMoreUsers()
-            }
-        }
     }
 
     // init recycler view
@@ -82,8 +80,8 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
         binding.rvUsers.apply {
             adapter = userAdapter
             layoutManager = LinearLayoutManager(activity)
-            addOnScrollListener(onScrollListener)
         }
+
         userAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
                 putSerializable("user", it)
@@ -93,6 +91,24 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
                 bundle
             )
         }
+
+        // on list scroll load more
+        binding.rvUsers.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0) {
+                    visibleItemCount = binding.rvUsers.layoutManager?.childCount ?: 0
+                    totalItemCount = binding.rvUsers.layoutManager?.itemCount ?: 0
+                    pastVisibleItems = (binding.rvUsers.layoutManager
+                            as LinearLayoutManager?)?.findFirstVisibleItemPosition() ?: 0
+                    if (isScrollLoading && searchView.isIconified) {
+                        if (visibleItemCount + pastVisibleItems >= totalItemCount) {
+                            isScrollLoading = false
+                            loadMoreUsers()
+                        }
+                    }
+                }
+            }
+        })
     }
 
     // load more data
@@ -110,6 +126,7 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
                 loadMoreUsers()
             }else{
                 userAdapter.submitList(it)
+                isScrollLoading = true
                 binding.shimmerViewContainer.stopShimmer()
                 binding.shimmerViewContainer.hideShimmer()
                 binding.itemNoInternet.root.visibility = View.GONE

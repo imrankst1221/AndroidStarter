@@ -6,6 +6,7 @@ import infixsoft.imrankst1221.android.starter.data.api.SafeApiRequest
 import infixsoft.imrankst1221.android.starter.data.api.UserApiService
 import infixsoft.imrankst1221.android.starter.data.model.*
 import infixsoft.imrankst1221.android.starter.utilities.*
+import infixsoft.imrankst1221.android.starter.utilities.Extensions.notifyObserver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -75,7 +76,13 @@ class UserRepository @Inject constructor(
             val size = users.value?.size ?: 0
             val response = apiRequest { service.getUsers(size) }
             isUserLoadFailed.value = false
-            users.postValue(response)
+            if (size > 0){
+                users.value?.addAll(response)
+                users.notifyObserver()
+            }else{
+                users.postValue(response)
+            }
+
         }else{
             isInternetFailed.value = true
             isUserLoadFailed.value = true

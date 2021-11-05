@@ -48,6 +48,7 @@ class UserAdapter: RecyclerView.Adapter<UserAdapter.AdapterViewHolder>(), Filter
     fun submitList(users: List<User>) {
         differ.submitList(users)
         mFullList = users
+        notifyItemChanged(users.size)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdapterViewHolder {

@@ -1,4 +1,5 @@
 package infixsoft.imrankst1221.android.starter.ui.views
+
 /**
  * @author imran.choudhury
  * 1/11/21
@@ -42,6 +43,7 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>(), OnGlobal
 
     // unregister observer
     private var isFragmentAvailable = true
+
     // network failed flag
     private var waitingForNetwork = false
 
@@ -90,7 +92,7 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>(), OnGlobal
     }
 
     // fetch user not from API
-    private fun fetchUserDetails(userName: String){
+    private fun fetchUserDetails(userName: String) {
         Coroutines.main {
             userViewModel.fetchUserDetails(userName)
         }
@@ -102,9 +104,9 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>(), OnGlobal
 
         // user details data change observer
         userViewModel.getUserDetails(user.login).observe(viewLifecycleOwner, { userDetails ->
-            if(userDetails == null) {
+            if (userDetails == null) {
                 fetchUserDetails(user.login)
-            }else {
+            } else {
                 Glide.with(mContext)
                     .load(userDetails.avatarUrl)
                     .placeholder(R.drawable.placeholder_image)
@@ -126,7 +128,7 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>(), OnGlobal
 
         // no internet API failed observer
         userViewModel.onNoInternetFailed().observe(viewLifecycleOwner, {
-            if (it){
+            if (it) {
                 binding.itemNoInternet.root.visibility = View.VISIBLE
             }
         })
@@ -137,10 +139,12 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>(), OnGlobal
         })
 
         // network observer
-        val connectivityManager = mContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        connectivityManager.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
+        val connectivityManager =
+            mContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager.registerDefaultNetworkCallback(object :
+            ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
-                if (waitingForNetwork){
+                if (waitingForNetwork) {
                     fetchUserDetails(user.login)
                 }
             }
@@ -156,13 +160,13 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>(), OnGlobal
 
     // keyboard on/off layout change listener
     override fun onGlobalLayout() {
-        if(isFragmentAvailable) {
+        if (isFragmentAvailable) {
             val r = Rect()
             mRootView.getWindowVisibleDisplayFrame(r)
             if (abs(mRootView.rootView.height - (r.bottom - r.top)) > 100) {
                 binding.scrollRoot.scrollToBottomWithoutFocusChange()
             }
-        }else{
+        } else {
             mRootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
         }
     }
