@@ -26,9 +26,6 @@ import infixsoft.imrankst1221.android.starter.ui.viewmodels.UsersViewModel
 import infixsoft.imrankst1221.android.starter.utilities.Coroutines
 import androidx.recyclerview.widget.RecyclerView
 
-
-
-
 class UserListFragment : BaseFragment<FragmentUserListBinding>(){
 
     override fun setBinding(): FragmentUserListBinding =
@@ -47,6 +44,8 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
     private var waitingForNetwork = false
     // unregister observer
     private var isFragmentAvailable = true
+    private var isObserverInit = true
+    private var searchQuery = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -54,17 +53,22 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
         mContext = (activity as MainActivity).applicationContext
         setupUI()
         setupRecyclerView()
-        setupObserver()
         isFragmentAvailable = true
     }
 
     private fun setupUI() {
+        if(isObserverInit) {
+            isObserverInit = false
+            setupObserver()
+            // skeletons view start
+            showShimmer()
+        } else{
+            hideShimmer()
+        }
+
         val supportActionBar = (activity as AppCompatActivity?)!!.supportActionBar
         supportActionBar?.title = getString(R.string.app_name)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
-
-        // skeletons view start
-        binding.shimmerViewContainer.startShimmer()
 
         // on click
         binding.itemNoInternet.btnRetry.setOnClickListener {
@@ -119,6 +123,14 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
         }
     }
 
+    private fun showShimmer(){
+        binding.shimmerViewContainer.startShimmer()
+    }
+    private fun hideShimmer(){
+        binding.shimmerViewContainer.stopShimmer()
+        binding.shimmerViewContainer.hideShimmer()
+    }
+
     private fun setupObserver() = Coroutines.main {
         // user list data change observer
         userViewModel.getUserList().observe(viewLifecycleOwner, {
@@ -127,8 +139,7 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
             }else{
                 userAdapter.submitList(it)
                 isScrollLoading = true
-                binding.shimmerViewContainer.stopShimmer()
-                binding.shimmerViewContainer.hideShimmer()
+                hideShimmer()
                 binding.itemNoInternet.root.visibility = View.GONE
                 binding.itemErrorMessage.root.visibility = View.GONE
                 binding.progressBar.visibility = View.GONE
@@ -191,8 +202,10 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
                     if (query.isEmpty()){
+                        searchQuery = ""
                         userAdapter.filter.filter("")
                     }else {
+                        searchQuery = query
                         userAdapter.filter.filter(query)
                     }
                 }
@@ -202,8 +215,10 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
             override fun onQueryTextChange(query: String?): Boolean {
                 query?.let {
                     if (query.isEmpty()){
+                        searchQuery = ""
                         userAdapter.filter.filter("")
                     }else {
+                        searchQuery = query
                         userAdapter.filter.filter(query)
                     }
                 }
@@ -222,6 +237,12 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
                 it.getSystemService(Context.SEARCH_SERVICE) as SearchManager
             searchView.setSearchableInfo(searchManager.getSearchableInfo(it.componentName))
         }
+
+        if(!searchQuery.isNullOrEmpty()){
+            searchPlate.setText(searchQuery)
+            searchView.isIconified = false
+        }
+
         return super.onCreateOptionsMenu(menu, inflater)
     }
 
