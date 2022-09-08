@@ -61,6 +61,8 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
     kapt "androidx.room:room-compiler:$rootProject.roomVersion"
     kapt "com.google.dagger:hilt-android-compiler:$rootProject.hiltVersion"
     kapt "com.github.bumptech.glide:compiler:$rootProject.glideVersion"

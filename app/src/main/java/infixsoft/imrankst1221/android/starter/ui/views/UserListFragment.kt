@@ -133,10 +133,10 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
 
     private fun setupObserver() = Coroutines.main {
         // user list data change observer
-        userViewModel.getUserList().observe(viewLifecycleOwner, {
-            if (it.isEmpty()){
+        userViewModel.getUserList().observe(viewLifecycleOwner) {
+            if (it.isEmpty()) {
                 loadMoreUsers()
-            }else{
+            } else {
                 userAdapter.submitList(it)
                 isScrollLoading = true
                 hideShimmer()
@@ -144,19 +144,21 @@ class UserListFragment : BaseFragment<FragmentUserListBinding>(){
                 binding.itemErrorMessage.root.visibility = View.GONE
                 binding.progressBar.visibility = View.GONE
             }
-        })
+        }
 
         // no internet n failed observer
-        userViewModel.onNoInternetFailed().observe(viewLifecycleOwner, {
-            if (it){
-                binding.itemNoInternet.root.visibility = View.VISIBLE
+        with(userViewModel) {
+            onNoInternetFailed().observe(viewLifecycleOwner) {
+                if (it) {
+                    binding.itemNoInternet.root.visibility = View.VISIBLE
+                }
             }
-        })
 
-        // wait for internet observer
-        userViewModel.onUserLoadFailed().observe(viewLifecycleOwner, {
-            waitingForNetwork = it
-        })
+            // wait for internet observer
+            onUserLoadFailed().observe(viewLifecycleOwner) {
+                waitingForNetwork = it
+            }
+        }
 
         // network observer
         val connectivityManager = mContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

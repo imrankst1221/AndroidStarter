@@ -103,7 +103,7 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>(), OnGlobal
         binding.scrollRoot.viewTreeObserver.addOnGlobalLayoutListener(this)
 
         // user details data change observer
-        userViewModel.getUserDetails(user.login).observe(viewLifecycleOwner, { userDetails ->
+        userViewModel.getUserDetails(user.login).observe(viewLifecycleOwner) { userDetails ->
             if (userDetails == null) {
                 fetchUserDetails(user.login)
             } else {
@@ -124,19 +124,19 @@ class UserDetailsFragment : BaseFragment<FragmentUserDetailsBinding>(), OnGlobal
                 binding.itemNoInternet.root.visibility = View.GONE
                 binding.itemErrorMessage.root.visibility = View.GONE
             }
-        })
+        }
 
         // no internet API failed observer
-        userViewModel.onNoInternetFailed().observe(viewLifecycleOwner, {
+        userViewModel.onNoInternetFailed().observe(viewLifecycleOwner) {
             if (it) {
                 binding.itemNoInternet.root.visibility = View.VISIBLE
             }
-        })
+        }
 
         // wait for internet observer
-        userViewModel.onUserDetailsLoadFailed().observe(viewLifecycleOwner, {
+        userViewModel.onUserDetailsLoadFailed().observe(viewLifecycleOwner) {
             waitingForNetwork = it
-        })
+        }
 
         // network observer
         val connectivityManager =

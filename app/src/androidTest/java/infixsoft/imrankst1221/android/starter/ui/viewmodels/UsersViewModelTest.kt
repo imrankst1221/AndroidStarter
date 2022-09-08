@@ -1,4 +1,4 @@
-package infixsoft.imrankst1221.android.starter.data
+package infixsoft.imrankst1221.android.starter.ui.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
@@ -6,9 +6,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import infixsoft.imrankst1221.android.starter.MainCoroutineRule
+import infixsoft.imrankst1221.android.starter.data.AppDatabase
 import infixsoft.imrankst1221.android.starter.data.DummyDataSet.DUMMY_USER1
 import infixsoft.imrankst1221.android.starter.data.repository.UserRepository
-import infixsoft.imrankst1221.android.starter.ui.viewmodels.UsersViewModel
 import kotlinx.coroutines.*
 import org.junit.*
 import org.junit.rules.RuleChain
