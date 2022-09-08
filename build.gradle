@@ -13,6 +13,8 @@ buildscript {
         gsonVersion = '2.8.2'
         roomVersion = '2.3.0'
 
+        appcompatVersion = '1.5.0'
+        recyclerviewVersion ='1.2.1'
         navigationVersion = '2.4.0-alpha01'
         materialVersion = '1.2.0'
         retrofitVersion = '2.9.0'
@@ -22,6 +24,10 @@ buildscript {
         pagingVersion = '3.0.0-alpha02'
         shimmerVersion = '0.5.0'
         glideVersion = '4.10.0'
+        coreKtxVersion = '1.9.0'
+        livedataKtxVersion = '2.5.1'
+        fragmentKtxVersion= '2.5.1'
+        uiKtxVersion = '2.5.1'
 
         // test
         testExtJunit = '1.1.0'
